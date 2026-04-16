@@ -84,7 +84,6 @@
     /* Hero Section */
     .hero {
       height: 100vh;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, #1A3A16 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -93,24 +92,45 @@
       color: var(--white);
     }
 
-    .hero-broccoli {
-      width: 80%;
-      max-width: 600px;
-      height: 80%;
-      max-height: 600px;
-      margin-bottom: 5%;
-      filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.3));
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1584868432434-5662c327a358?w=1600&h=900&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      z-index: -1;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 26, 8, 0.4);
+      backdrop-filter: blur(2px);
+      z-index: 0;
+    }
+
+    .hero-content-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center;
+      will-change: transform;
     }
 
     .hero-content {
-      position: absolute;
-      bottom: 4rem;
-      left: 2rem;
-      right: 2rem;
-      max-width: 600px;
+      position: relative;
+      text-align: center;
+      max-width: 700px;
+      padding: 0 2rem;
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s var(--ease) 0.4s, transform 0.8s var(--ease) 0.4s;
+      transform: translateY(40px);
+      transition: opacity 0.8s var(--ease) 0.5s, transform 0.8s var(--ease) 0.5s;
     }
 
     body.hero-done .hero-content {
@@ -605,37 +625,15 @@
 
   <!-- Hero Section -->
   <section class="hero" id="hero">
-    <svg class="hero-broccoli" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
-      <!-- Broccoli illustration -->
-      <!-- Stem -->
-      <rect x="85" y="160" width="30" height="70" fill="#5A7D4F" rx="4"/>
-      <!-- Main floret clusters -->
-      <g fill="#2D5A27" opacity="0.9">
-        <!-- Center top -->
-        <circle cx="100" cy="80" r="35"/>
-        <!-- Left florets -->
-        <circle cx="65" cy="100" r="28"/>
-        <circle cx="50" cy="130" r="22"/>
-        <!-- Right florets -->
-        <circle cx="135" cy="100" r="28"/>
-        <circle cx="150" cy="130" r="22"/>
-        <!-- Side florets -->
-        <circle cx="75" cy="50" r="20"/>
-        <circle cx="125" cy="50" r="20"/>
-      </g>
-      <!-- Highlight details -->
-      <g fill="#3D7A3C" opacity="0.6">
-        <circle cx="95" cy="75" r="8"/>
-        <circle cx="60" cy="95" r="6"/>
-        <circle cx="140" cy="95" r="6"/>
-        <circle cx="100" cy="120" r="7"/>
-      </g>
-    </svg>
-    <div class="hero-content">
-      <h1 lang="en">The World's Most Underrated Vegetable</h1>
-      <h1 lang="de">Das unterschätzteste Gemüse der Welt</h1>
-      <p class="subtitle" lang="en">A deep dive into the green vegetable that divides families, fuels science, and feeds half the world.</p>
-      <p class="subtitle" lang="de">Ein tiefgehendes Verständnis des grünen Gemüses, das Familien spaltet, die Wissenschaft antreibt und die halbe Welt ernährt.</p>
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content-wrapper" id="hero-wrapper">
+      <div class="hero-content">
+        <h1 lang="en">The World's Most Underrated Vegetable</h1>
+        <h1 lang="de">Das unterschätzteste Gemüse der Welt</h1>
+        <p class="subtitle" lang="en">A deep dive into the green vegetable that divides families, fuels science, and feeds half the world.</p>
+        <p class="subtitle" lang="de">Ein tiefgehendes Verständnis des grünen Gemüses, das Familien spaltet, die Wissenschaft antreibt und die halbe Welt ernährt.</p>
+      </div>
     </div>
   </section>
 
@@ -1025,29 +1023,40 @@
 
     reveals.forEach(reveal => revealObserver.observe(reveal));
 
-    // Hero Zoom-Out Animation
+    // Hero Immersive Zoom-Out Animation
     const hero = document.getElementById('hero');
-    const broccoli = document.querySelector('.hero-broccoli');
+    const heroBg = document.getElementById('hero-bg');
+    const heroWrapper = document.getElementById('hero-wrapper');
 
-    let scrollProgress = 0;
+    let heroScrollProgress = 0;
     window.addEventListener('scroll', () => {
       const heroHeight = hero.offsetHeight;
       const scrollY = window.scrollY;
 
       if (scrollY < heroHeight) {
-        scrollProgress = scrollY / (heroHeight * 0.5);
-        scrollProgress = Math.min(scrollProgress, 1);
+        heroScrollProgress = scrollY / (heroHeight * 0.6);
+        heroScrollProgress = Math.min(heroScrollProgress, 1);
 
-        const scale = 1 - (scrollProgress * 0.3);
-        const translateY = scrollProgress * 60;
-        const opacity = 1 - (scrollProgress * 0.3);
+        // Immersive effects:
+        // 1. Background zooms out (scale down)
+        const bgScale = 1 + (heroScrollProgress * 0.3);
+        heroBg.style.transform = `scale(${bgScale})`;
 
-        broccoli.style.transform = `scale(${scale}) translateY(${translateY}px)`;
-        broccoli.style.opacity = opacity;
+        // 2. Content zooms out dramatically + rises up
+        const contentScale = 1 - (heroScrollProgress * 0.5);
+        const contentTranslateY = -heroScrollProgress * 100;
+        const contentOpacity = 1 - (heroScrollProgress * 0.6);
+
+        heroWrapper.style.transform = `scale(${contentScale}) translateY(${contentTranslateY}px)`;
+        heroWrapper.style.opacity = contentOpacity;
+
+        // 3. Blur effect increases as you scroll
+        const blurAmount = heroScrollProgress * 8;
+        heroBg.style.filter = `blur(${blurAmount}px)`;
       }
 
-      // Hero done - show content
-      if (scrollProgress > 0.6) {
+      // Hero done - show next section content
+      if (heroScrollProgress > 0.7) {
         document.body.classList.add('hero-done');
       } else {
         document.body.classList.remove('hero-done');
