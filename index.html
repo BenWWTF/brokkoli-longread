@@ -83,7 +83,7 @@
 
     /* Hero Section */
     .hero {
-      height: 350vh;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -92,14 +92,16 @@
       color: var(--white);
     }
 
-    .hero-bg {
+    .hero-image {
       position: absolute;
-      inset: 0;
-      background-image: url('./broccoli-hero.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       z-index: 0;
+      will-change: transform;
+      transform-origin: center center;
     }
 
     .hero-overlay {
@@ -744,7 +746,7 @@
 
   <!-- Hero Section -->
   <section class="hero" id="hero">
-    <div class="hero-bg" id="hero-bg"></div>
+    <img id="hero-image" src="./broccoli-hero.jpg" alt="Broccoli florets in field" class="hero-image">
     <div class="hero-overlay"></div>
     <div class="hero-content-wrapper" id="hero-wrapper">
       <div class="hero-content">
@@ -1182,41 +1184,44 @@
 
     timelineItems.forEach(item => timelineObserver.observe(item));
 
-    // Hero Zoom-Out Animation (scrolling through tall hero section)
+    // Hero Scroll Zoom Animation - Research-Backed Pattern
     const hero = document.getElementById('hero');
-    const heroBg = document.getElementById('hero-bg');
+    const heroImage = document.getElementById('hero-image');
     const heroWrapper = document.getElementById('hero-wrapper');
     const heroContent = document.querySelector('.hero-content');
 
-    window.addEventListener('scroll', () => {
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function handleHeroScroll() {
+      if (prefersReducedMotion) return;
+
+      // Get hero's position relative to viewport
       const heroRect = hero.getBoundingClientRect();
-      const heroTop = heroRect.top;
-      const heroHeight = heroRect.height;
+      const heroHeight = hero.offsetHeight;
       const viewportHeight = window.innerHeight;
 
-      // Calculate progress: 0 when hero enters viewport, 1 when it exits
-      // Hero starts at top of screen and scrolls out
-      let scrollProgress = Math.max(0, Math.min(1, (viewportHeight - heroTop) / (viewportHeight + heroHeight)));
+      // Calculate scroll progress: 0 when hero top is at viewport top, 1 when hero bottom is at viewport top
+      const scrollProgress = Math.max(0, -heroRect.top / heroHeight);
+      const clampedProgress = Math.min(scrollProgress, 1);
 
-      // Image: zoom from 2.2x to 0.9x
-      const bgScale = 2.2 - (scrollProgress * 1.3);
-      heroBg.style.transform = `scale(${bgScale})`;
-
-      // Blur: 0 to 16px
-      const blurAmount = scrollProgress * 16;
-      heroBg.style.filter = `blur(${blurAmount}px)`;
+      // Image: zoom from 2.0x to 0.95x as you scroll
+      const imageScale = 2.0 - (clampedProgress * 1.05);
+      heroImage.style.transform = `scale(${imageScale})`;
 
       // Content: fade in from 0 to 1 as you scroll through hero
-      const contentOpacity = Math.min(scrollProgress * 1.5, 1);
+      const contentOpacity = Math.min(clampedProgress * 1.5, 1);
       heroContent.style.opacity = contentOpacity;
 
-      // Wrapper container stays at 1 for fixed positioning math
-      if (scrollProgress > 0.7) {
+      // Show next section when hero is mostly scrolled
+      if (clampedProgress > 0.7) {
         document.body.classList.add('hero-done');
       } else {
         document.body.classList.remove('hero-done');
       }
-    });
+    }
+
+    window.addEventListener('scroll', handleHeroScroll, { passive: true });
 
     // Chart animations with stagger
     const chartBars = document.querySelectorAll('.chart-bar');
