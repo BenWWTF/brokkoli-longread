@@ -487,20 +487,9 @@
       .chart-country { flex: 0 0 72px; }
       .bush-line { font-size: clamp(1.5rem, 6vw, 2rem); }
 
-      /* Hero: collapse to single viewport height, no scroll-jacking.
-         hero-content is now a DOM sibling of .hero, so on mobile we
-         pull it back over the photo with negative margin + relative pos. */
-      .hero-container { height: 100dvh; position: relative; }
-      .hero { position: relative; top: auto; }
-      .hero-content {
-        position: absolute;    /* overlay the static hero photo */
-        top: 0; left: 0; right: 0; bottom: 0;
-        margin-top: 0;
-        height: auto;
-        pointer-events: none;
-        opacity: 1 !important;
-      }
-      .hero-image { will-change: auto; transform: none !important; }
+      /* Hero: shorter container on mobile — same two-layer sticky effect */
+      .hero-container { height: 400vh; }
+      .hero-image { will-change: auto; } /* no GPU layers on mobile */
 
       /* Bush quote: shorter sticky container on mobile (280vh vs 420vh desktop) */
       .bush-quote-outer { height: 280vh; }
@@ -822,8 +811,9 @@
     const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isMobile = window.innerWidth < 768;
 
-    // ── Hero — three-phase sequence (desktop only) ───────────────────
-    if (!reduced && !isMobile) {
+    // ── Hero — three-phase sequence (desktop + mobile) ───────────────
+    // Same percentages work at both 600vh (desktop) and 400vh (mobile).
+    if (!reduced) {
       // Phase 1 (0→30%): broccoli zooms from 2× to natural scale — half the original length
       gsap.fromTo('#hero-image',
         { scale: 2 },
@@ -874,26 +864,32 @@
         onLeaveBack: () => document.getElementById('scroll-hint')?.classList.remove('hidden'),
       });
 
-      // ── Mid-Page Zoom (GSAP scrub: scale 2.6→1, label fades at 55%) ─
-      gsap.fromTo('#mid-zoom-num',
-        { scale: 2.6 },
-        {
-          scale: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '#mid-zoom-container',
-            start: 'top top',
-            end: '65% bottom',
-            scrub: 1.5,
-            onUpdate: self => {
-              document.getElementById('mid-zoom-label')
-                .classList.toggle('visible', self.progress >= 0.55);
+      // ── Mid-Page Zoom: desktop only ──────────────────────────────────
+      if (!isMobile) {
+        gsap.fromTo('#mid-zoom-num',
+          { scale: 2.6 },
+          {
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#mid-zoom-container',
+              start: 'top top',
+              end: '65% bottom',
+              scrub: 1.5,
+              onUpdate: self => {
+                document.getElementById('mid-zoom-label')
+                  .classList.toggle('visible', self.progress >= 0.55);
+              }
             }
           }
-        }
-      );
+        );
+      } else {
+        // Mobile: static 88% — no zoom, no sticky (CSS handles layout)
+        gsap.set('#mid-zoom-num', { scale: 1 });
+        document.getElementById('mid-zoom-label')?.classList.add('visible');
+      }
     } else {
-      // Mobile or reduced motion: show everything immediately
+      // Reduced motion: show everything immediately
       gsap.set('#hero-content', { opacity: 1 });
       gsap.set('#mid-zoom-num', { scale: 1 });
       document.getElementById('mid-zoom-label')?.classList.add('visible');
