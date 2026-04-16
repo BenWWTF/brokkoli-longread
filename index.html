@@ -824,7 +824,7 @@
 
     // ── Hero — three-phase sequence (desktop only) ───────────────────
     if (!reduced && !isMobile) {
-      // Phase 1 (0→60%): broccoli zooms from 2× to natural scale
+      // Phase 1 (0→30%): broccoli zooms from 2× to natural scale — half the original length
       gsap.fromTo('#hero-image',
         { scale: 2 },
         {
@@ -832,22 +832,21 @@
           scrollTrigger: {
             trigger: '#hero-container',
             start: 'top top',
-            end: '60% top',   // 300vh into 500vh container
+            end: '30% top',   // 180vh — halved from previous 360vh
             scrub: 1.5,
           }
         }
       );
 
-      // Phase 2 (52→62%): headline reveals — white text over settled photo
-      // Container is 600vh; unpin = 600−100 = 500vh (≈ 83.3%)
+      // Phase 2 (32→42%): headline reveals right after zoom settles
       gsap.fromTo('#hero-content',
         { opacity: 0 },
         {
           opacity: 1, ease: 'none',
           scrollTrigger: {
             trigger: '#hero-container',
-            start: '52% top',  // 312vh
-            end: '62% top',    // 372vh
+            start: '32% top',  // 192vh
+            end: '42% top',    // 252vh
             scrub: 1,
           }
         }
