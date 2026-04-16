@@ -50,43 +50,6 @@
       transition: width 0.08s linear;
     }
 
-    /* ─── Language Toggle ──────────────────────────────── */
-    .lang-toggle {
-      position: fixed;
-      top: 1.25rem; right: 1.25rem;
-      z-index: 1000;
-      display: flex;
-      background: rgba(255,255,255,0.96);
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      padding: 0.3rem;
-      font-family: var(--font-sans);
-      font-size: 0.78rem;
-      font-weight: 600;
-      backdrop-filter: blur(6px);
-    }
-
-    .lang-btn {
-      padding: 0.35rem 0.75rem;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      cursor: pointer;
-      border-radius: 3px;
-      letter-spacing: 0.04em;
-      transition: all 0.15s;
-    }
-
-    .lang-btn.active {
-      background: var(--green-accent);
-      color: white;
-    }
-
-    /* ─── Language ─────────────────────────────────────── */
-    [lang="de"] { display: none; }
-    body.lang-de [lang="en"] { display: none; }
-    body.lang-de [lang="de"] { display: block; }
-
     /* ─── Reveal ────────────────────────────────────────── */
     .reveal {
       opacity: 0;
@@ -462,6 +425,56 @@
 
     .callout p { font-size: 0.95rem; color: var(--text-secondary); margin: 0; line-height: 1.65; }
 
+    /* ─── Mid-Page Zoom ──────────────────────────────────── */
+    .mid-zoom-container {
+      position: relative;
+      height: 280vh;
+    }
+
+    .mid-zoom-section {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background: var(--bg-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: var(--white);
+    }
+
+    .mid-zoom-content {
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    .mid-zoom-number {
+      font-family: var(--font-display);
+      font-size: clamp(7rem, 22vw, 15rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+      display: block;
+      letter-spacing: -0.04em;
+      will-change: transform;
+    }
+
+    .mid-zoom-label {
+      font-family: var(--font-sans);
+      font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+      color: rgba(255,255,255,0.55);
+      line-height: 1.55;
+      margin-top: 1.75rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+
+    .mid-zoom-label.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* ─── Dark Band ──────────────────────────────────────── */
     .dark-band {
       background: var(--bg-dark);
@@ -737,16 +750,12 @@
       }
       .reveal, .timeline-item, .stat-item { opacity: 1; transform: none; }
       .hero-scroll-hint { display: none; }
+      .mid-zoom-label { opacity: 1; transform: none; }
     }
   </style>
 </head>
 <body>
   <div id="reading-progress"></div>
-
-  <div class="lang-toggle">
-    <button class="lang-btn active" data-lang="en">EN</button>
-    <button class="lang-btn" data-lang="de">DE</button>
-  </div>
 
   <!-- ── Hero ─────────────────────────────────────────────── -->
   <div class="hero-container" id="hero-container">
@@ -754,15 +763,12 @@
       <img id="hero-image" src="./broccoli-hero.jpg" alt="Fresh broccoli florets" class="hero-image">
       <div class="hero-overlay"></div>
       <div class="hero-content">
-        <h1 lang="en">Broccoli is technically a flower.</h1>
-        <h1 lang="de">Brokkoli ist eigentlich eine Blume.</h1>
-        <p class="subtitle" lang="en">A deep dive into the vegetable that divides families, fuels science, and feeds half the world.</p>
-        <p class="subtitle" lang="de">Ein tiefgehendes Verständnis des Gemüses, das Familien spaltet, die Wissenschaft antreibt und die halbe Welt ernährt.</p>
+        <h1>Broccoli is technically a flower.</h1>
+        <p class="subtitle">A deep dive into the vegetable that divides families, fuels science, and feeds half the world.</p>
       </div>
       <div class="hero-scroll-hint" id="scroll-hint">
         <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
-        <span lang="en">Scroll</span>
-        <span lang="de">Scrollen</span>
+        <span>Scroll</span>
       </div>
     </section>
   </div>
@@ -770,19 +776,13 @@
   <!-- ── Health ────────────────────────────────────────────── -->
   <section>
     <div class="container">
-      <span class="eyebrow reveal" lang="en">Health &amp; Science</span>
-      <span class="eyebrow reveal" lang="de">Gesundheit &amp; Wissenschaft</span>
+      <span class="eyebrow reveal">Health &amp; Science</span>
       <div class="section-rule reveal"></div>
-      <h2 lang="en" class="reveal">The Science of Green</h2>
-      <h2 lang="de" class="reveal">Die Wissenschaft des Grüns</h2>
-      <p class="lede reveal" lang="en">Broccoli contains a compound that doesn't actually exist — until you eat it.</p>
-      <p class="lede reveal" lang="de">Brokkoli enthält einen Stoff, der nicht wirklich existiert — bis man ihn isst.</p>
+      <h2 class="reveal">The Science of Green</h2>
+      <p class="lede reveal">Broccoli contains a compound that doesn't actually exist — until you eat it.</p>
 
-      <p lang="en">
+      <p>
         The most powerful compound in broccoli is sulforaphane. But sulforaphane doesn't exist in raw broccoli. The plant stores two separate compounds in different cellular compartments — glucoraphanin and the enzyme myrosinase — kept deliberately apart. Only when you bite down, or run a knife through a floret, do the compartments break open. The compounds mix for the first time. A chemical reaction fires. Broccoli synthesizes its own medicine in the moment of being eaten.
-      </p>
-      <p lang="de">
-        Die stärkste Verbindung in Brokkoli ist Sulforaphan. Aber Sulforaphan existiert nicht im rohen Brokkoli. Die Pflanze speichert zwei Verbindungen in getrennten Zellkompartimenten – Glucoraphanin und das Enzym Myrosinase. Erst wenn man beißt oder schneidet, vermischen sie sich. Brokkoli synthetisiert seine Medizin genau in dem Moment, in dem man ihn isst.
       </p>
 
       <!-- Sticky scrolly: mechanism steps -->
@@ -793,92 +793,66 @@
         </div>
         <div class="mechanism-steps">
           <div class="mechanism-step" data-step="1">
-            <span class="mechanism-step-label" lang="en">Step 1</span>
-            <span class="mechanism-step-label" lang="de">Schritt 1</span>
-            <h4 lang="en">Cell damage</h4>
-            <h4 lang="de">Zellschaden</h4>
-            <p lang="en">Chewing or cutting ruptures cell walls, forcing two compounds that were kept apart to finally meet.</p>
-            <p lang="de">Kauen oder Schneiden bricht Zellwände auf und bringt zwei getrennte Stoffe erstmals in Kontakt.</p>
+            <span class="mechanism-step-label">Step 1</span>
+            <h4>Cell damage</h4>
+            <p>Chewing or cutting ruptures cell walls, forcing two compounds that were kept apart to finally meet.</p>
           </div>
           <div class="mechanism-step" data-step="2">
-            <span class="mechanism-step-label" lang="en">Step 2</span>
-            <span class="mechanism-step-label" lang="de">Schritt 2</span>
-            <h4 lang="en">The reaction</h4>
-            <h4 lang="de">Die Reaktion</h4>
-            <p lang="en">Glucoraphanin meets myrosinase. The enzyme converts it to sulforaphane — a compound with documented effects on cancer prevention, inflammation, and blood sugar.</p>
-            <p lang="de">Glucoraphanin trifft auf Myrosinase. Das Enzym wandelt es in Sulforaphan um – eine Verbindung mit belegten Effekten auf Krebsvorbeugung, Entzündung und Blutzucker.</p>
+            <span class="mechanism-step-label">Step 2</span>
+            <h4>The reaction</h4>
+            <p>Glucoraphanin meets myrosinase. The enzyme converts it to sulforaphane — a compound with documented effects on cancer prevention, inflammation, and blood sugar.</p>
           </div>
           <div class="mechanism-step" data-step="3">
-            <span class="mechanism-step-label" lang="en">Step 3</span>
-            <span class="mechanism-step-label" lang="de">Schritt 3</span>
-            <h4 lang="en">Nrf2 activation</h4>
-            <h4 lang="de">Nrf2-Aktivierung</h4>
-            <p lang="en">Sulforaphane activates the Nrf2 pathway — the body's master regulator of antioxidant defense, detoxification, and anti-inflammatory response.</p>
-            <p lang="de">Sulforaphan aktiviert den Nrf2-Signalweg – den zentralen Regulator der antioxidativen Abwehr, Entgiftung und Entzündungshemmung.</p>
+            <span class="mechanism-step-label">Step 3</span>
+            <h4>Nrf2 activation</h4>
+            <p>Sulforaphane activates the Nrf2 pathway — the body's master regulator of antioxidant defense, detoxification, and anti-inflammatory response.</p>
           </div>
           <div class="mechanism-step" data-step="4">
-            <span class="mechanism-step-label" lang="en">Step 4</span>
-            <span class="mechanism-step-label" lang="de">Schritt 4</span>
-            <h4 lang="en">The catch</h4>
-            <h4 lang="de">Der Haken</h4>
-            <p lang="en">Sulforaphane is heat-stable — but the enzyme myrosinase is not. Cook broccoli immediately after cutting, and the enzyme dies before the reaction completes. The glucoraphanin stays locked in an unusable form.</p>
-            <p lang="de">Sulforaphan ist hitzestabil – die Myrosinase nicht. Kocht man Brokkoli sofort nach dem Schneiden, stirbt das Enzym, bevor die Reaktion abgeschlossen ist. Das Glucoraphanin bleibt unbrauchbar.</p>
+            <span class="mechanism-step-label">Step 4</span>
+            <h4>The catch</h4>
+            <p>Sulforaphane is heat-stable — but the enzyme myrosinase is not. Cook broccoli immediately after cutting, and the enzyme dies before the reaction completes. The glucoraphanin stays locked in an unusable form.</p>
           </div>
         </div>
       </div>
 
-      <h3 lang="en">What this means for your kitchen</h3>
-      <h3 lang="de">Was das für Ihre Küche bedeutet</h3>
-      <p lang="en">
+      <h3>What this means for your kitchen</h3>
+      <p>
         Chop the broccoli. Wait 40 minutes. Then cook. During that window, myrosinase completes the conversion before heat stops it. The 40-minute rule has been validated in peer-reviewed studies. It is one of the very few food preparation techniques that measurably shifts a health compound's bioavailability. One more trick: mustard powder contains heat-stable myrosinase. Sprinkle it onto cooked broccoli, and the reaction happens even after cooking.
       </p>
-      <p lang="de">
-        Brokkoli schneiden. 40 Minuten warten. Dann kochen. In diesem Zeitfenster schließt die Myrosinase die Umwandlung ab, bevor Hitze sie stoppt. Die 40-Minuten-Regel wurde in begutachteten Studien validiert. Noch ein Trick: Senfpulver enthält hitzestabile Myrosinase. Auf gekochten Brokkoli gestreut, ermöglicht es die Reaktion auch nach dem Kochen.
-      </p>
 
-      <h3 lang="en">Cooking method matters</h3>
-      <h3 lang="de">Die Zubereitungsmethode zählt</h3>
-      <p lang="en">Sulforaphane retention relative to raw:</p>
-      <p lang="de">Sulforaphan-Erhalt relativ zu roh:</p>
+      <h3>Cooking method matters</h3>
+      <p>Sulforaphane retention relative to raw:</p>
 
       <div class="cooking-chart">
         <div class="cooking-method">
-          <span class="cooking-label" lang="en">Raw</span>
-          <span class="cooking-label" lang="de">Roh</span>
+          <span class="cooking-label">Raw</span>
           <div class="cooking-bar"><div class="cooking-fill" style="--w:100%"></div></div>
           <span class="cooking-pct">100%</span>
         </div>
         <div class="cooking-method">
-          <span class="cooking-label" lang="en">Steamed (3–5 min)</span>
-          <span class="cooking-label" lang="de">Gedünstet (3–5 Min)</span>
+          <span class="cooking-label">Steamed (3–5 min)</span>
           <div class="cooking-bar"><div class="cooking-fill" style="--w:85%"></div></div>
           <span class="cooking-pct">85%</span>
         </div>
         <div class="cooking-method">
-          <span class="cooking-label" lang="en">Microwaved</span>
-          <span class="cooking-label" lang="de">Mikrowelle</span>
+          <span class="cooking-label">Microwaved</span>
           <div class="cooking-bar"><div class="cooking-fill" style="--w:75%"></div></div>
           <span class="cooking-pct">75%</span>
         </div>
         <div class="cooking-method">
-          <span class="cooking-label" lang="en">Stir-fried</span>
-          <span class="cooking-label" lang="de">Geröstet</span>
+          <span class="cooking-label">Stir-fried</span>
           <div class="cooking-bar"><div class="cooking-fill" style="--w:65%"></div></div>
           <span class="cooking-pct">65%</span>
         </div>
         <div class="cooking-method">
-          <span class="cooking-label" lang="en">Boiled</span>
-          <span class="cooking-label" lang="de">Gekocht</span>
+          <span class="cooking-label">Boiled</span>
           <div class="cooking-bar"><div class="cooking-fill" style="--w:30%"></div></div>
           <span class="cooking-pct">30%</span>
         </div>
       </div>
 
-      <p lang="en">
+      <p>
         Boiling leaches glucosinolates into the water — which we then discard. The cooking water becomes the nutritious part. Steaming preserves 70–90% of glucosinolates while keeping myrosinase intact. The 40-minute rule applies here too: steam after waiting, and you keep nearly everything the plant made.
-      </p>
-      <p lang="de">
-        Kochen schwemmt Glucosinolate ins Wasser, das wir dann wegwerfen. Das Kochwasser wird zum nahrhaften Teil. Dünsten bewahrt 70–90% der Glucosinolate. Die 40-Minuten-Regel gilt auch hier: dämpfen nach dem Warten, und man behält fast alles, was die Pflanze produziert hat.
       </p>
     </div>
   </section>
@@ -886,95 +860,80 @@
   <!-- ── Culture ───────────────────────────────────────────── -->
   <section>
     <div class="container">
-      <span class="eyebrow amber reveal" lang="en">Cultural History</span>
-      <span class="eyebrow amber reveal" lang="de">Kulturgeschichte</span>
+      <span class="eyebrow amber reveal">Cultural History</span>
       <div class="section-rule amber reveal"></div>
-      <h2 lang="en" class="reveal">A Vegetable with a Passport</h2>
-      <h2 lang="de" class="reveal">Ein Gemüse mit Pass</h2>
-      <p class="lede reveal" lang="en">From Roman antiquity to the United States Supreme Court, broccoli has accumulated a stranger history than almost any other vegetable.</p>
-      <p class="lede reveal" lang="de">Von der römischen Antike bis zum Obersten Gericht der USA hat Brokkoli eine unwahrscheinlichere Geschichte angesammelt als fast jedes andere Gemüse.</p>
+      <h2 class="reveal">A Vegetable with a Passport</h2>
+      <p class="lede reveal">From Roman antiquity to the United States Supreme Court, broccoli has accumulated a stranger history than almost any other vegetable.</p>
 
       <div class="timeline">
         <div class="timeline-item">
-          <div class="timeline-year" lang="en">~79 CE</div>
-          <div class="timeline-year" lang="de">~79 n. Chr.</div>
+          <div class="timeline-year">~79 CE</div>
           <div class="timeline-content">
-            <h4 lang="en">Pliny praises it</h4>
-            <h4 lang="de">Plinius lobt es</h4>
-            <p lang="en">Roman naturalist Pliny the Elder calls broccoli "one of the most delicious vegetables" in his <em>Naturalis Historia</em>.</p>
-            <p lang="de">Plinius der Ältere nennt Brokkoli in seiner <em>Naturalis Historia</em> "eines der köstlichsten Gemüse".</p>
+            <h4>Pliny praises it</h4>
+            <p>Roman naturalist Pliny the Elder calls broccoli "one of the most delicious vegetables" in his <em>Naturalis Historia</em>.</p>
           </div>
         </div>
         <div class="timeline-item">
-          <div class="timeline-year" lang="en">1533</div>
-          <div class="timeline-year" lang="de">1533</div>
+          <div class="timeline-year">1533</div>
           <div class="timeline-content">
-            <h4 lang="en">Catherine de Medici</h4>
-            <h4 lang="de">Katharina von Medici</h4>
-            <p lang="en">Italian seeds arrive in France with the Medici court. French nobility initially calls it "Italian asparagus" — a name that didn't stick.</p>
-            <p lang="de">Italienische Samen kommen mit dem Medici-Hof nach Frankreich. Der Adel nennt es zunächst "italienischen Spargel".</p>
+            <h4>Catherine de Medici</h4>
+            <p>Italian seeds arrive in France with the Medici court. French nobility initially calls it "Italian asparagus" — a name that didn't stick.</p>
           </div>
         </div>
         <div class="timeline-item">
-          <div class="timeline-year" lang="en">1922</div>
-          <div class="timeline-year" lang="de">1922</div>
+          <div class="timeline-year">1922</div>
           <div class="timeline-content">
-            <h4 lang="en">The D'Arrigo brothers</h4>
-            <h4 lang="de">Die D'Arrigo-Brüder</h4>
-            <p lang="en">Sicilian immigrants Stephano and Andrea begin commercial cultivation in California. Their "Andy Boy" brand is still on shelves today.</p>
-            <p lang="de">Die sizilianischen Einwanderer Stephano und Andrea beginnen Anbau in Kalifornien. Ihre Marke "Andy Boy" ist noch heute im Handel.</p>
+            <h4>The D'Arrigo brothers</h4>
+            <p>Sicilian immigrants Stephano and Andrea begin commercial cultivation in California. Their "Andy Boy" brand is still on shelves today.</p>
           </div>
         </div>
         <div class="timeline-item">
-          <div class="timeline-year" lang="en">1990</div>
-          <div class="timeline-year" lang="de">1990</div>
+          <div class="timeline-year">1990</div>
           <div class="timeline-content">
-            <h4 lang="en">George H.W. Bush's war</h4>
-            <h4 lang="de">Bushs Krieg</h4>
-            <p lang="en">President Bush bans broccoli from Air Force One. Growers ship 10 tons to the White House in protest.</p>
-            <p lang="de">Präsident Bush verbietet Brokkoli auf Air Force One. Züchter schicken 10 Tonnen ans Weiße Haus als Protest.</p>
+            <h4>George H.W. Bush's war</h4>
+            <p>President Bush bans broccoli from Air Force One. Growers ship 10 tons to the White House in protest.</p>
           </div>
         </div>
         <div class="timeline-item">
-          <div class="timeline-year" lang="en">2012</div>
-          <div class="timeline-year" lang="de">2012</div>
+          <div class="timeline-year">2012</div>
           <div class="timeline-content">
-            <h4 lang="en">The broccoli problem</h4>
-            <h4 lang="de">Das Brokkoli-Problem</h4>
-            <p lang="en">Justice Scalia raises broccoli in ACA Supreme Court arguments. A vegetable becomes shorthand for the limits of government power.</p>
-            <p lang="de">Richter Scalia erwähnt Brokkoli in ACA-Argumenten. Ein Gemüse wird zum Sinnbild für die Grenzen staatlicher Macht.</p>
+            <h4>The broccoli problem</h4>
+            <p>Justice Scalia raises broccoli in ACA Supreme Court arguments. A vegetable becomes shorthand for the limits of government power.</p>
           </div>
         </div>
         <div class="timeline-item">
-          <div class="timeline-year" lang="en">2016</div>
-          <div class="timeline-year" lang="de">2016</div>
+          <div class="timeline-year">2016</div>
           <div class="timeline-content">
-            <h4 lang="en">The broccoli tree</h4>
-            <h4 lang="de">Der Brokkoli-Baum</h4>
-            <p lang="en">A lone tree in Aberfeldy, Scotland — shaped exactly like a broccoli floret — becomes a global internet sensation.</p>
-            <p lang="de">Ein einsamer Baum in Aberfeldy, Schottland, geformt wie ein Brokkoli-Röschen, wird zur weltweiten Internet-Sensation.</p>
+            <h4>The broccoli tree</h4>
+            <p>A lone tree in Aberfeldy, Scotland — shaped exactly like a broccoli floret — becomes a global internet sensation.</p>
           </div>
         </div>
       </div>
 
       <div class="callout reveal">
-        <span class="callout-label" lang="en">The supertaster gene</span>
-        <span class="callout-label" lang="de">Das Supertaster-Gen</span>
-        <p lang="en">About 25% of the population carries the TAS2R38 variant on chromosome 7, making them "supertasters" who experience broccoli's glucosinolates as intensely bitter. This is genuine genetics, not preference — which explains why the vegetable divides people with such reliability.</p>
-        <p lang="de">Etwa 25% der Bevölkerung trägt die TAS2R38-Variante auf Chromosom 7. Sie erleben Brokkolist Glucosinolate als intensiv bitter. Dies ist echte Genetik, keine Frage des Geschmacks – was erklärt, warum Brokkoli Menschen so zuverlässig spaltet.</p>
+        <span class="callout-label">The supertaster gene</span>
+        <p>About 25% of the population carries the TAS2R38 variant on chromosome 7, making them "supertasters" who experience broccoli's glucosinolates as intensely bitter. This is genuine genetics, not preference — which explains why the vegetable divides people with such reliability.</p>
       </div>
     </div>
   </section>
 
+  <!-- ── Mid-Page Zoom ──────────────────────────────────────── -->
+  <div class="mid-zoom-container" id="mid-zoom-container">
+    <div class="mid-zoom-section" id="mid-zoom">
+      <div class="mid-zoom-content">
+        <span class="mid-zoom-number" id="mid-zoom-num">85%</span>
+        <p class="mid-zoom-label" id="mid-zoom-label">
+          of the world's broccoli<br>comes from one country
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Dark Band ──────────────────────────────────────────── -->
   <div class="dark-band">
-    <blockquote class="reveal" lang="en">
+    <blockquote class="reveal">
       <p>I do not like broccoli. And I haven't liked it since I was a little kid and my mother made me eat it. And I'm President of the United States, and I'm not going to eat any more broccoli.</p>
       <cite>George H.W. Bush — 41st President of the United States, 1990</cite>
-    </blockquote>
-    <blockquote class="reveal" lang="de">
-      <p>Ich mag keinen Brokkoli. Und ich habe ihn nicht gemocht, seit ich ein kleines Kind war und meine Mutter mich dazu zwang. Und ich bin Präsident der Vereinigten Staaten, und ich werde keinen Brokkoli mehr essen.</p>
-      <cite>George H.W. Bush — 41. Präsident der Vereinigten Staaten, 1990</cite>
     </blockquote>
   </div>
 
@@ -982,57 +941,46 @@
   <section>
     <div class="container-wide">
       <div class="container">
-        <span class="eyebrow blue reveal" lang="en">Global Impact</span>
-        <span class="eyebrow blue reveal" lang="de">Globale Bedeutung</span>
+        <span class="eyebrow blue reveal">Global Impact</span>
         <div class="section-rule blue reveal"></div>
-        <h2 lang="en" class="reveal">The Politics of a Vegetable</h2>
-        <h2 lang="de" class="reveal">Die Politik eines Gemüses</h2>
-        <p class="lede reveal" lang="en">In 1970, Americans ate almost no broccoli. Today, the numbers are different.</p>
-        <p class="lede reveal" lang="de">1970 aßen Amerikaner kaum Brokkoli. Heute sieht das anders aus.</p>
+        <h2 class="reveal">The Politics of a Vegetable</h2>
+        <p class="lede reveal">In 1970, Americans ate almost no broccoli. Today, the numbers are different.</p>
       </div>
 
       <div class="stat-highlight reveal">
         <span class="big-number" id="count-up" data-target="900">0</span>
-        <span class="big-label" lang="en">percent increase in US per capita broccoli consumption since 1970</span>
-        <span class="big-label" lang="de">Prozent Anstieg des Pro-Kopf-Brokkoli-Verbrauchs in den USA seit 1970</span>
+        <span class="big-label">percent increase in US per capita broccoli consumption since 1970</span>
       </div>
 
       <div class="container">
-        <h3 lang="en">Global production</h3>
-        <h3 lang="de">Globale Produktion</h3>
-        <p lang="en">One country produces nearly all of it.</p>
-        <p lang="de">Ein Land produziert fast alles davon.</p>
+        <h3>Global production</h3>
+        <p>One country produces nearly all of it.</p>
       </div>
 
       <div class="container-wide">
         <div class="production-chart">
           <div class="chart-bar">
-            <span class="chart-country" lang="en">China</span>
-            <span class="chart-country" lang="de">China</span>
+            <span class="chart-country">China</span>
             <div class="chart-bar-bg"><div class="chart-bar-fill" style="--w:88%"></div></div>
             <span class="chart-value">9.2M t</span>
           </div>
           <div class="chart-bar">
-            <span class="chart-country" lang="en">India</span>
-            <span class="chart-country" lang="de">Indien</span>
+            <span class="chart-country">India</span>
             <div class="chart-bar-bg"><div class="chart-bar-fill" style="--w:5%"></div></div>
             <span class="chart-value">520K t</span>
           </div>
           <div class="chart-bar">
-            <span class="chart-country" lang="en">USA</span>
-            <span class="chart-country" lang="de">USA</span>
+            <span class="chart-country">USA</span>
             <div class="chart-bar-bg"><div class="chart-bar-fill" style="--w:3.2%"></div></div>
             <span class="chart-value">340K t</span>
           </div>
           <div class="chart-bar">
-            <span class="chart-country" lang="en">Spain</span>
-            <span class="chart-country" lang="de">Spanien</span>
+            <span class="chart-country">Spain</span>
             <div class="chart-bar-bg"><div class="chart-bar-fill" style="--w:2%"></div></div>
             <span class="chart-value">210K t</span>
           </div>
           <div class="chart-bar">
-            <span class="chart-country" lang="en">Mexico</span>
-            <span class="chart-country" lang="de">Mexiko</span>
+            <span class="chart-country">Mexico</span>
             <div class="chart-bar-bg"><div class="chart-bar-fill" style="--w:1.8%"></div></div>
             <span class="chart-value">190K t</span>
           </div>
@@ -1040,54 +988,37 @@
       </div>
 
       <div class="container">
-        <p lang="en">
+        <p>
           China produces 85–90% of the world's broccoli. The United States — almost entirely concentrated in California's Salinas Valley — produces roughly 1.4 million tonnes annually. China's output is more than seven times larger. When you eat broccoli in Berlin, London, or New York, it almost certainly grew in a Chinese field.
         </p>
-        <p lang="de">
-          China produziert 85–90% des Welt-Brokkoliaufkommens. Die USA, fast vollständig im kalifornischen Salinas Valley konzentriert, produzieren rund 1,4 Millionen Tonnen jährlich. Chinas Produktion ist mehr als siebenmal größer.
-        </p>
 
-        <h3 lang="en">Environmental footprint</h3>
-        <h3 lang="de">Umweltbilanz</h3>
-        <p lang="en">For a food that now accounts for a $15 billion global market, broccoli is remarkably efficient.</p>
-        <p lang="de">Für ein Lebensmittel mit einem globalen Marktwert von 15 Mrd. USD ist Brokkoli bemerkenswert effizient.</p>
+        <h3>Environmental footprint</h3>
+        <p>For a food that now accounts for a $15 billion global market, broccoli is remarkably efficient.</p>
       </div>
 
       <div class="stats-row reveal">
         <div class="stat-item">
-          <span class="stat-number" lang="en">0.5</span>
-          <span class="stat-number" lang="de">0,5</span>
-          <span class="stat-label" lang="en">kg CO₂-eq per kg<br>beef is 27 kg</span>
-          <span class="stat-label" lang="de">kg CO₂-eq pro kg<br>Rind: 27 kg</span>
+          <span class="stat-number">0.5</span>
+          <span class="stat-label">kg CO₂-eq per kg<br>beef is 27 kg</span>
         </div>
         <div class="stat-item">
           <span class="stat-number">285</span>
-          <span class="stat-label" lang="en">liters water per kg<br>almonds need 3,500</span>
-          <span class="stat-label" lang="de">Liter Wasser pro kg<br>Mandeln: 3.500 L</span>
+          <span class="stat-label">liters water per kg<br>almonds need 3,500</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number" lang="en">30–40%</span>
-          <span class="stat-number" lang="de">30–40%</span>
-          <span class="stat-label" lang="en">of global production<br>never reaches consumers</span>
-          <span class="stat-label" lang="de">der globalen Produktion<br>erreicht Verbraucher nicht</span>
+          <span class="stat-number">30–40%</span>
+          <span class="stat-label">of global production<br>never reaches consumers</span>
         </div>
       </div>
 
       <div class="container">
-        <p lang="en">
+        <p>
           Despite its efficiency, the concentration of American production in drought-prone California creates real vulnerability. The Salinas River aquifer faces seawater intrusion from over-pumping. Climate change is expected to push growing regions northward within decades. The vegetable that feeds half the world is grown, overwhelmingly, in two regions — one in California, one in China — that are both under pressure.
         </p>
-        <p lang="de">
-          Trotz seiner Effizienz schafft die Konzentration der amerikanischen Produktion im trockenheitsanfälligen Kalifornien eine echte Verwundbarkeit. Der Salinas-River-Aquifer droht zu versalzen. Der Klimawandel wird die Anbauregionen in den kommenden Jahrzehnten nach Norden verschieben.
-        </p>
 
-        <div class="pull-quote reveal" lang="en">
+        <div class="pull-quote reveal">
           <p>"The most powerful compound in broccoli doesn't exist until you eat it."</p>
           <span class="pull-quote-author">The science of sulforaphane</span>
-        </div>
-        <div class="pull-quote reveal" lang="de">
-          <p>„Die mächtigste Verbindung in Brokkoli existiert erst, wenn man ihn isst."</p>
-          <span class="pull-quote-author">Die Wissenschaft des Sulforaphans</span>
         </div>
       </div>
     </div>
@@ -1096,57 +1027,30 @@
   <!-- ── Closing ───────────────────────────────────────────── -->
   <section class="closing">
     <div class="container">
-      <span class="closing-eyebrow reveal" lang="en">The Takeaway</span>
-      <span class="closing-eyebrow reveal" lang="de">Das Fazit</span>
-      <span class="closing-big-line reveal" lang="en">40 minutes.</span>
-      <span class="closing-big-line reveal" lang="de">40 Minuten.</span>
+      <span class="closing-eyebrow reveal">The Takeaway</span>
+      <span class="closing-big-line reveal">40 minutes.</span>
 
-      <p class="reveal" lang="en">
+      <p class="reveal">
         That's all it takes. Chop your broccoli. Set a timer. The plant does the rest — synthesizing a compound that researchers have linked to cancer prevention, reduced inflammation, and lower blood sugar. You don't need a supplement or a prescription. You need a knife and patience.
       </p>
-      <p class="reveal" lang="de">
-        Das ist alles, was es braucht. Brokkoli schneiden. Timer stellen. Die Pflanze übernimmt den Rest — und synthetisiert eine Verbindung, die Forscher mit Krebsvorbeugung, reduzierter Entzündung und niedrigerem Blutzucker in Verbindung gebracht haben.
-      </p>
 
-      <p class="reveal" lang="en">
+      <p class="reveal">
         Broccoli is what it always was: ancient, efficient, misunderstood. A flower we eat before it blooms. A weapon the plant evolved against insects that humans accidentally hijacked for their own biology. A vegetable one president banned from his plane while ten tons arrived at his doorstep in protest.
       </p>
-      <p class="reveal" lang="de">
-        Brokkoli ist, was er immer war: alt, effizient, missverstanden. Eine Blüte, die wir essen, bevor sie aufblüht. Eine Waffe, die die Pflanze gegen Insekten entwickelte und die Menschen zufällig für sich nutzbar machten.
-      </p>
 
-      <div class="closing-tip reveal" lang="en">
+      <div class="closing-tip reveal">
         Tonight: chop first &nbsp;·&nbsp; wait 40 minutes &nbsp;·&nbsp; pinch of mustard powder &nbsp;·&nbsp; steam gently
-      </div>
-      <div class="closing-tip reveal" lang="de">
-        Heute Abend: zuerst schneiden &nbsp;·&nbsp; 40 Minuten warten &nbsp;·&nbsp; Prise Senfpulver &nbsp;·&nbsp; sanft dämpfen
       </div>
     </div>
   </section>
 
   <!-- ── Footer ─────────────────────────────────────────────── -->
   <footer>
-    <p lang="en">Research from Johns Hopkins, FAO, and peer-reviewed nutritional science.</p>
-    <p lang="de">Forschung von Johns Hopkins, FAO und wissenschaftlicher Ernährungsliteratur.</p>
-    <p><a href="https://github.com/BenWWTF/brokkoli-longread" lang="en">Source on GitHub ↗</a><a href="https://github.com/BenWWTF/brokkoli-longread" lang="de">Quelle auf GitHub ↗</a></p>
+    <p>Research from Johns Hopkins, FAO, and peer-reviewed nutritional science.</p>
+    <p><a href="https://github.com/BenWWTF/brokkoli-longread">Source on GitHub ↗</a></p>
   </footer>
 
   <script>
-    // ── Language Toggle ──────────────────────────────────────
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if (btn.dataset.lang === 'de') {
-          document.body.classList.add('lang-de');
-          document.documentElement.lang = 'de';
-        } else {
-          document.body.classList.remove('lang-de');
-          document.documentElement.lang = 'en';
-        }
-      });
-    });
-
     // ── Reading Progress ─────────────────────────────────────
     const progressBar = document.getElementById('reading-progress');
     function updateProgress() {
@@ -1212,7 +1116,6 @@
             const start = performance.now();
             function tick(now) {
               const t = Math.min((now - start) / duration, 1);
-              // ease out quart
               const eased = 1 - Math.pow(1 - t, 4);
               countEl.textContent = '+' + Math.round(eased * target) + '%';
               if (t < 1) requestAnimationFrame(tick);
@@ -1241,12 +1144,13 @@
       document.querySelectorAll('.mechanism-step').forEach(el => stepObs.observe(el));
     }
 
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // ── Hero Zoom ────────────────────────────────────────────
     const heroContainer = document.getElementById('hero-container');
     const heroImage     = document.getElementById('hero-image');
     const heroContent   = document.querySelector('.hero-content');
     const scrollHint    = document.getElementById('scroll-hint');
-    const reduced       = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduced) {
       heroImage.style.transform = 'scale(1)';
@@ -1267,6 +1171,32 @@
 
       window.addEventListener('scroll', onHeroScroll, { passive: true });
       onHeroScroll();
+    }
+
+    // ── Mid-Page Zoom (85% stat) ─────────────────────────────
+    const midContainer = document.getElementById('mid-zoom-container');
+    const midNum       = document.getElementById('mid-zoom-num');
+    const midLabel     = document.getElementById('mid-zoom-label');
+
+    if (midContainer && midNum && !reduced) {
+      midNum.style.transform = 'scale(2.6)';
+
+      function onMidZoom() {
+        const rect = midContainer.getBoundingClientRect();
+        const p = Math.max(0, Math.min(1,
+          -rect.top / (midContainer.offsetHeight - window.innerHeight)
+        ));
+        // Zoom from 2.6 → 1 over first 65% of scroll
+        const scale = Math.max(1, 2.6 - (p / 0.65) * 1.6);
+        midNum.style.transform = `scale(${scale})`;
+        // Label fades in after 55%
+        midLabel.classList.toggle('visible', p >= 0.55);
+      }
+
+      window.addEventListener('scroll', onMidZoom, { passive: true });
+      onMidZoom();
+    } else if (midLabel) {
+      midLabel.classList.add('visible');
     }
 
     // ── Scroll ───────────────────────────────────────────────
