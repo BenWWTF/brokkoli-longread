@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+Pro:wght@400;600&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
-  <title lang="en">The World's Most Underrated Vegetable</title>
-  <title lang="de">Das unterschätzteste Gemüse der Welt</title>
+  <title lang="en">Broccoli is technically a flower</title>
+  <title lang="de">Brokkoli ist eigentlich eine Blume</title>
   <style>
     :root {
       --text: #1A1A1A;
@@ -126,7 +126,7 @@
     .hero-content {
       position: relative;
       text-align: center;
-      max-width: 700px;
+      max-width: 900px;
       padding: 0 2rem;
       opacity: 0;
       transform: translateY(40px);
@@ -136,6 +136,26 @@
     body.hero-done .hero-content {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .hero-content h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 12vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      letter-spacing: -0.02em;
+    }
+
+    .hero-content .subtitle {
+      font-family: var(--font-sans);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .hero h1 {
@@ -728,8 +748,8 @@
     <div class="hero-overlay"></div>
     <div class="hero-content-wrapper" id="hero-wrapper">
       <div class="hero-content">
-        <h1 lang="en">The World's Most Underrated Vegetable</h1>
-        <h1 lang="de">Das unterschätzteste Gemüse der Welt</h1>
+        <h1 lang="en">Broccoli is technically a flower.</h1>
+        <h1 lang="de">Brokkoli ist eigentlich eine Blume.</h1>
         <p class="subtitle" lang="en">A deep dive into the green vegetable that divides families, fuels science, and feeds half the world.</p>
         <p class="subtitle" lang="de">Ein tiefgehendes Verständnis des grünen Gemüses, das Familien spaltet, die Wissenschaft antreibt und die halbe Welt ernährt.</p>
       </div>
