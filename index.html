@@ -493,8 +493,7 @@
         padding: 5rem 1.75rem;
         align-items: flex-start;
       }
-      .bush-line { opacity: 1 !important; transform: none !important; }
-      .bush-cite { opacity: 1 !important; transform: none !important; }
+      /* bush-line / bush-cite opacity is controlled by GSAP IO stagger — no !important override */
       .bush-mark { font-size: clamp(4rem, 14vw, 7rem); }
 
       /* Mid-zoom: no sticky, no full-bleed breakout */
@@ -888,11 +887,22 @@
         document.querySelector('.bush-cite'),
       ].filter(Boolean);
 
-      if (reduced || isMobile) {
-        // Mobile/reduced: lines already visible via CSS override, nothing to do
+      if (reduced) {
+        // Reduced motion: show all immediately
         bushEls.forEach(el => gsap.set(el, { opacity: 1, y: 0 }));
+      } else if (isMobile) {
+        // Mobile: IO stagger — reveals lines as the quote scrolls into view
+        const bushMobileObs = new IntersectionObserver(entries => {
+          if (entries[0].isIntersecting) {
+            bushEls.forEach((el, i) => {
+              gsap.to(el, { opacity: 1, y: 0, duration: 0.55, delay: i * 0.2, ease: 'power2.out' });
+            });
+            bushMobileObs.disconnect();
+          }
+        }, { threshold: 0.1 });
+        bushMobileObs.observe(bushOuter);
       } else {
-        // Desktop: GSAP scroll-driven sequential reveal
+        // Desktop: GSAP scroll-driven sequential reveal (420vh sticky container)
         bushEls.forEach((el, i) => {
           gsap.fromTo(el,
             { opacity: 0, y: 18 },
