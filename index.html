@@ -485,15 +485,9 @@
       .hero-content { opacity: 1 !important; } /* GSAP not active on mobile */
       .hero-image { will-change: auto; transform: none !important; }
 
-      /* Bush quote: no sticky tall container — just a readable block */
-      .bush-quote-outer { height: auto; }
-      .bush-quote-section {
-        position: relative; top: auto;
-        height: auto;
-        padding: 5rem 1.75rem;
-        align-items: flex-start;
-      }
-      /* bush-line / bush-cite opacity is controlled by GSAP IO stagger — no !important override */
+      /* Bush quote: shorter sticky container on mobile (280vh vs 420vh desktop) */
+      .bush-quote-outer { height: 280vh; }
+      .bush-quote-section { padding: clamp(4rem, 10vw, 6rem) 1.75rem; align-items: flex-start; }
       .bush-mark { font-size: clamp(4rem, 14vw, 7rem); }
 
       /* Mid-zoom: no sticky, no full-bleed breakout */
@@ -898,19 +892,10 @@
       if (reduced) {
         // Reduced motion: show all immediately
         bushEls.forEach(el => gsap.set(el, { opacity: 1, y: 0 }));
-      } else if (isMobile) {
-        // Mobile: IO stagger — reveals lines as the quote scrolls into view
-        const bushMobileObs = new IntersectionObserver(entries => {
-          if (entries[0].isIntersecting) {
-            bushEls.forEach((el, i) => {
-              gsap.to(el, { opacity: 1, y: 0, duration: 0.55, delay: i * 0.2, ease: 'power2.out' });
-            });
-            bushMobileObs.disconnect();
-          }
-        }, { threshold: 0.1 });
-        bushMobileObs.observe(bushOuter);
       } else {
-        // Desktop: GSAP scroll-driven sequential reveal (420vh sticky container)
+        // Both desktop and mobile: GSAP scroll-driven line-by-line reveal.
+        // Mobile uses tighter spacing (14%) because container is 280vh not 420vh.
+        const pct = isMobile ? 14 : 17;
         bushEls.forEach((el, i) => {
           gsap.fromTo(el,
             { opacity: 0, y: 18 },
@@ -920,7 +905,7 @@
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: '#bush-quote-outer',
-                start: `${i * 17}% top`,
+                start: `${i * pct}% top`,
                 toggleActions: 'play none none reverse',
               }
             }
