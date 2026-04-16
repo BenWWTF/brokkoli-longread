@@ -832,7 +832,7 @@
           scrollTrigger: {
             trigger: '#hero-container',
             start: 'top top',
-            end: '30% top',   // 180vh — halved from previous 360vh
+            end: '20% top',   // 120vh — fast snap
             scrub: 1.5,
           }
         }
@@ -845,8 +845,8 @@
           opacity: 1, ease: 'none',
           scrollTrigger: {
             trigger: '#hero-container',
-            start: '32% top',  // 192vh
-            end: '42% top',    // 252vh
+            start: '22% top',  // 132vh
+            end: '32% top',    // 192vh
             scrub: 1,
           }
         }
@@ -854,8 +854,8 @@
 
       // Phase 3 (65→75%): photo fades, bg → white, headline white → black.
       // Ends at 450vh — leaving 50vh of black-on-white dwell before 500vh unpin.
-      const transStart = '65% top';  // 390vh
-      const transEnd   = '75% top';  // 450vh → 50vh dwell until unpin at 500vh
+      const transStart = '55% top';  // 330vh
+      const transEnd   = '65% top';  // 390vh → 110vh of black-on-white dwell until unpin at 500vh
       const transOpts  = { trigger: '#hero-container', start: transStart, end: transEnd, scrub: 1 };
 
       gsap.to('#hero-image',
