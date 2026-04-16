@@ -78,7 +78,7 @@
     }
 
     /* ─── Hero ──────────────────────────────────────────────────────── */
-    .hero-container { position: relative; height: 350vh; }
+    .hero-container { position: relative; height: 500vh; }
 
     .hero {
       position: sticky;
@@ -809,36 +809,50 @@
     const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isMobile = window.innerWidth < 768;
 
-    // ── Hero Zoom (GSAP scrub: scale 2→1 with cinematic lag) ─────────
-    // Desktop only — mobile hero is static (no scroll-jacking)
+    // ── Hero — three-phase sequence (desktop only) ───────────────────
     if (!reduced && !isMobile) {
+      // Phase 1 (0→60%): broccoli zooms from 2× to natural scale
       gsap.fromTo('#hero-image',
         { scale: 2 },
         {
-          scale: 1,
-          ease: 'none',
+          scale: 1, ease: 'none',
           scrollTrigger: {
             trigger: '#hero-container',
             start: 'top top',
-            end: 'bottom bottom',
+            end: '60% top',   // 300vh into 500vh container
             scrub: 1.5,
           }
         }
       );
 
+      // Phase 2 (52→65%): headline reveals as white text over settled photo
       gsap.fromTo('#hero-content',
         { opacity: 0 },
         {
-          opacity: 1,
-          ease: 'none',
+          opacity: 1, ease: 'none',
           scrollTrigger: {
             trigger: '#hero-container',
-            start: '55% top',
-            end: '80% top',
+            start: '52% top',
+            end: '65% top',
             scrub: 1,
           }
         }
       );
+
+      // Phase 3 (75→94%): photo fades out, bg brightens to white,
+      // headline colour scrubs white → near-black simultaneously
+      const transStart = '75% top';
+      const transEnd   = '94% top';
+      const transOpts  = { trigger: '#hero-container', start: transStart, end: transEnd, scrub: 1 };
+
+      gsap.to('#hero-image',
+        { opacity: 0, ease: 'none', scrollTrigger: { ...transOpts } });
+      gsap.to('.hero-overlay',
+        { opacity: 0, ease: 'none', scrollTrigger: { ...transOpts } });
+      gsap.to('#hero',
+        { backgroundColor: '#FFFFFF', ease: 'none', scrollTrigger: { ...transOpts } });
+      gsap.to('#hero-content h1',
+        { color: '#1A1A1A', ease: 'none', scrollTrigger: { ...transOpts } });
 
       ScrollTrigger.create({
         trigger: '#hero-container',
