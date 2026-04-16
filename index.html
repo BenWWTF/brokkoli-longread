@@ -1196,6 +1196,9 @@
         heroScrollProgress = scrollY / (heroHeight * 0.6);
         heroScrollProgress = Math.min(heroScrollProgress, 1);
 
+        // Debug log
+        if (scrollY > 50) console.log('Hero scroll progress:', heroScrollProgress.toFixed(2), 'scrollY:', scrollY, 'heroHeight:', heroHeight);
+
         // Immersive effects:
         // 1. Background zooms out (scale down)
         const bgScale = 1 + (heroScrollProgress * 0.3);
