@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="A deep dive into broccoli: its health science, cultural history, and global significance.">
   <meta name="theme-color" content="#0A1A08">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+Pro:wght@400;600&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="./broccoli-hero.jpg">
   <title>Broccoli is technically a flower</title>
   <style>
     :root {
@@ -81,12 +84,14 @@
       position: sticky;
       top: 0;
       height: 100vh;
+      height: 100dvh; /* tracks visible viewport on iOS Safari */
       background: var(--bg-dark);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       color: var(--white);
+      padding-top: env(safe-area-inset-top);
     }
 
     .hero-image {
@@ -94,8 +99,8 @@
       width: 100%; height: 100%;
       object-fit: cover;
       z-index: 0;
-      will-change: transform;
       transform-origin: center center;
+      /* will-change: added on desktop only — see media query */
     }
 
     .hero-overlay {
@@ -327,7 +332,7 @@
       margin-left: -50vw;
     }
     .mid-zoom-section {
-      position: sticky; top: 0; height: 100vh;
+      position: sticky; top: 0; height: 100vh; height: 100dvh;
       background: var(--bg-dark);
       display: flex; align-items: center; justify-content: center;
       overflow: hidden; color: var(--white);
@@ -364,6 +369,7 @@
       position: sticky;
       top: 0;
       height: 100vh;
+      height: 100dvh;
       background: var(--bg-dark);
       display: flex;
       align-items: center;
@@ -455,6 +461,11 @@
     footer a { color: rgba(168,213,162,0.7); text-decoration: none; }
     footer a:hover { color: var(--green-light); }
 
+    /* ─── Desktop-only: will-change and hero-container height ──────── */
+    @media (min-width: 768px) {
+      .hero-image { will-change: transform; }
+    }
+
     /* ─── Mobile ────────────────────────────────────────────────────── */
     @media (max-width: 767px) {
       .timeline-item { grid-template-columns: 70px 1fr; gap: 1.2rem; }
@@ -467,7 +478,33 @@
       .cooking-label { flex: 0 0 100px; }
       .chart-country { flex: 0 0 72px; }
       .bush-line { font-size: clamp(1.5rem, 6vw, 2rem); }
+
+      /* Hero: collapse to single viewport height, no scroll-jacking */
+      .hero-container { height: 100dvh; }
+      .hero { position: relative; top: auto; }
+      .hero-content { opacity: 1 !important; } /* GSAP not active on mobile */
+      .hero-image { will-change: auto; transform: none !important; }
+
+      /* Bush quote: no sticky tall container — just a readable block */
+      .bush-quote-outer { height: auto; }
+      .bush-quote-section {
+        position: relative; top: auto;
+        height: auto;
+        padding: 5rem 1.75rem;
+        align-items: flex-start;
+      }
+      .bush-line { opacity: 1 !important; transform: none !important; }
+      .bush-cite { opacity: 1 !important; transform: none !important; }
+      .bush-mark { font-size: clamp(4rem, 14vw, 7rem); }
+
+      /* Mid-zoom: no sticky, no full-bleed breakout */
+      .mid-zoom-container { height: auto; width: 100%; left: auto; margin-left: 0; }
+      .mid-zoom-section { position: relative; top: auto; height: auto; padding: 5rem 2rem; }
+      .mid-zoom-label { opacity: 1; transform: none; }
     }
+
+    /* ─── Footer safe area ──────────────────────────────────────────── */
+    footer { padding-bottom: max(2.5rem, env(safe-area-inset-bottom)); }
 
     /* ─── Reduced Motion ────────────────────────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
@@ -776,10 +813,12 @@
 
   <script>
     gsap.registerPlugin(ScrollTrigger);
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 768;
 
     // ── Hero Zoom (GSAP scrub: scale 2→1 with cinematic lag) ─────────
-    if (!reduced) {
+    // Desktop only — mobile hero is static (no scroll-jacking)
+    if (!reduced && !isMobile) {
       gsap.fromTo('#hero-image',
         { scale: 2 },
         {
@@ -789,7 +828,7 @@
             trigger: '#hero-container',
             start: 'top top',
             end: 'bottom bottom',
-            scrub: 1.5,  // lag coefficient: trails scroll, not 1:1
+            scrub: 1.5,
           }
         }
       );
@@ -801,7 +840,7 @@
           ease: 'none',
           scrollTrigger: {
             trigger: '#hero-container',
-            start: '55% top',   // text starts after zoom is mostly done
+            start: '55% top',
             end: '80% top',
             scrub: 1,
           }
@@ -834,14 +873,14 @@
         }
       );
     } else {
-      // Reduced motion: show everything at rest
+      // Mobile or reduced motion: show everything immediately
       gsap.set('#hero-content', { opacity: 1 });
       gsap.set('#mid-zoom-num', { scale: 1 });
       document.getElementById('mid-zoom-label')?.classList.add('visible');
       document.getElementById('scroll-hint')?.classList.add('hidden');
     }
 
-    // ── Bush Quote: GSAP scroll-driven line-by-line reveal ───────────
+    // ── Bush Quote: scroll-driven on desktop, IO stagger on mobile ───
     const bushOuter = document.getElementById('bush-quote-outer');
     if (bushOuter) {
       const bushEls = [
@@ -849,9 +888,11 @@
         document.querySelector('.bush-cite'),
       ].filter(Boolean);
 
-      if (reduced) {
+      if (reduced || isMobile) {
+        // Mobile/reduced: lines already visible via CSS override, nothing to do
         bushEls.forEach(el => gsap.set(el, { opacity: 1, y: 0 }));
       } else {
+        // Desktop: GSAP scroll-driven sequential reveal
         bushEls.forEach((el, i) => {
           gsap.fromTo(el,
             { opacity: 0, y: 18 },
@@ -879,11 +920,12 @@
     document.querySelectorAll('.section-rule').forEach(el => ruleObs.observe(el));
 
     // ── Reveal (IO fallback for browsers without CSS view-timeline) ───
+    // Lower threshold on mobile — elements fill more of the viewport
     const revealObs = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.classList.add('is-visible'); revealObs.unobserve(e.target); }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: isMobile ? 0.05 : 0.1, rootMargin: isMobile ? '0px' : '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
     // ── Timeline stagger ──────────────────────────────────────────────
@@ -894,7 +936,7 @@
           tlObs.unobserve(e.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+    }, { threshold: isMobile ? 0.05 : 0.12, rootMargin: isMobile ? '0px' : '0px 0px -30px 0px' });
     document.querySelectorAll('.timeline-item').forEach(el => tlObs.observe(el));
 
     // ── Stats row stagger ─────────────────────────────────────────────
@@ -907,7 +949,7 @@
           statObs.unobserve(e.target);
         }
       });
-    }, { threshold: 0.2 });
+    }, { threshold: isMobile ? 0.1 : 0.2 });
     document.querySelectorAll('.stats-row').forEach(el => statObs.observe(el));
 
     // ── Chart bar fills ───────────────────────────────────────────────
@@ -918,7 +960,7 @@
           chartObs.unobserve(e.target);
         }
       });
-    }, { threshold: 0.2, rootMargin: '0px 0px -20px 0px' });
+    }, { threshold: isMobile ? 0.1 : 0.2, rootMargin: isMobile ? '0px' : '0px 0px -20px 0px' });
     document.querySelectorAll('.chart-bar, .cooking-method').forEach(el => chartObs.observe(el));
 
     // ── Count-up ──────────────────────────────────────────────────────
@@ -958,7 +1000,9 @@
             e.target.classList.add('is-active-step');
           }
         });
-      }, { threshold: 0.1, rootMargin: '-38% 0px -52% 0px' });
+      // Desktop: narrow band so only one step is "active" at a time
+    // Mobile: wider band since layout is fully vertical
+    }, { threshold: 0.1, rootMargin: isMobile ? '-20% 0px -20% 0px' : '-38% 0px -52% 0px' });
       allSteps.forEach(el => stepObs.observe(el));
     }
   </script>
