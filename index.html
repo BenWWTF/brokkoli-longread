@@ -1190,8 +1190,14 @@
     const heroWrapper = document.getElementById('hero-wrapper');
     const heroContent = document.querySelector('.hero-content');
 
+    // Debug: verify elements exist
+    console.log('Hero element:', hero);
+    console.log('Hero image element:', heroImage);
+    console.log('Hero content element:', heroContent);
+
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    console.log('Prefers reduced motion:', prefersReducedMotion);
 
     function handleHeroScroll() {
       if (prefersReducedMotion) return;
@@ -1209,6 +1215,11 @@
       const imageScale = 2.0 - (clampedProgress * 1.05);
       heroImage.style.transform = `scale(${imageScale})`;
 
+      // Debug: log values every 10% of scroll
+      if (Math.round(clampedProgress * 10) % 1 === 0 && clampedProgress > 0) {
+        console.log('Scroll progress:', clampedProgress.toFixed(2), 'Image scale:', imageScale.toFixed(2), 'Hero top:', heroRect.top.toFixed(0));
+      }
+
       // Content: fade in from 0 to 1 as you scroll through hero
       const contentOpacity = Math.min(clampedProgress * 1.5, 1);
       heroContent.style.opacity = contentOpacity;
@@ -1222,6 +1233,11 @@
     }
 
     window.addEventListener('scroll', handleHeroScroll, { passive: true });
+
+    // Initial call to set starting state
+    heroImage.style.transform = 'scale(2.0)';
+    heroContent.style.opacity = '0';
+    console.log('Hero animation initialized with scale 2.0');
 
     // Chart animations with stagger
     const chartBars = document.querySelectorAll('.chart-bar');
