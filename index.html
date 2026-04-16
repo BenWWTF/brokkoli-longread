@@ -1200,20 +1200,20 @@
         if (scrollY > 50) console.log('Hero scroll progress:', heroScrollProgress.toFixed(2), 'scrollY:', scrollY, 'heroHeight:', heroHeight);
 
         // Immersive effects:
-        // 1. Background zooms out (scale down)
-        const bgScale = 1 + (heroScrollProgress * 0.3);
+        // 1. Background zooms out (expands as you scroll away)
+        const bgScale = 1 + (heroScrollProgress * 0.8);
         heroBg.style.transform = `scale(${bgScale})`;
 
-        // 2. Content zooms out dramatically + rises up
-        const contentScale = 1 - (heroScrollProgress * 0.5);
-        const contentTranslateY = -heroScrollProgress * 100;
-        const contentOpacity = 1 - (heroScrollProgress * 0.6);
+        // 2. Content zooms out dramatically + rises up + fades
+        const contentScale = 1 - (heroScrollProgress * 0.8);
+        const contentTranslateY = -heroScrollProgress * 300;
+        const contentOpacity = 1 - (heroScrollProgress * 0.8);
 
         heroWrapper.style.transform = `scale(${contentScale}) translateY(${contentTranslateY}px)`;
         heroWrapper.style.opacity = contentOpacity;
 
         // 3. Blur effect increases as you scroll
-        const blurAmount = heroScrollProgress * 8;
+        const blurAmount = heroScrollProgress * 15;
         heroBg.style.filter = `blur(${blurAmount}px)`;
       }
 
