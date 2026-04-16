@@ -863,8 +863,10 @@
       });
 
       // ── Mid-Page Zoom (desktop + mobile) ─────────────────────────────
+      // Mobile starts at a smaller scale — font is already large at 22vw,
+      // so 2.6× would be clipped and overwhelming on a small screen.
       gsap.fromTo('#mid-zoom-num',
-        { scale: 2.6 },
+        { scale: isMobile ? 1.6 : 2.6 },
         {
           scale: 1,
           ease: 'none',
