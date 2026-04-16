@@ -249,10 +249,32 @@
       background: var(--white);
       border-left: 4px solid var(--green-accent);
       border-radius: 8px;
+      opacity: 0;
+      transform: translateX(-40px) scale(0.95);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .diagram-step:last-child {
       margin-bottom: 0;
+    }
+
+    .diagram-step.is-visible {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      box-shadow: 0 8px 24px rgba(61, 122, 60, 0.15);
+    }
+
+    .diagram-step:nth-child(2).is-visible {
+      transition-delay: 0.1s;
+    }
+
+    .diagram-step:nth-child(3).is-visible {
+      transition-delay: 0.2s;
+    }
+
+    .diagram-step:nth-child(4).is-visible {
+      transition-delay: 0.3s;
     }
 
     .diagram-number {
@@ -317,12 +339,38 @@
       height: 100%;
       background: linear-gradient(90deg, var(--green-accent), var(--green-light));
       border-radius: 4px;
-      transition: width 1s var(--ease) 0.3s;
       width: 0%;
+      opacity: 0;
+      box-shadow: 0 0 15px rgba(61, 122, 60, 0.4);
+      transition: width 1.2s var(--ease) 0.3s, opacity 0.8s var(--ease) 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cooking-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: slide 2s linear infinite;
+    }
+
+    @keyframes slide {
+      0% { left: -100%; }
+      100% { left: 100%; }
     }
 
     .cooking-method.is-visible .cooking-fill {
       opacity: 1;
+      box-shadow: 0 4px 15px rgba(61, 122, 60, 0.6);
+      animation: shimmer 0.8s var(--ease) 1.2s;
+    }
+
+    .cooking-method.is-visible .cooking-fill::after {
+      animation: slide 2s linear 1.2s infinite;
     }
 
     .cooking-percent {
@@ -346,13 +394,35 @@
       gap: 2rem;
       margin-bottom: 3rem;
       opacity: 0;
-      transform: translateX(-20px);
-      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+      transform: translateX(-40px) translateY(20px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+      padding: 1.5rem;
+      border-radius: 8px;
+      background: rgba(168, 213, 162, 0.05);
     }
 
     .timeline-item.is-visible {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateX(0) translateY(0);
+      background: rgba(168, 213, 162, 0.12);
+    }
+
+    .timeline-item:nth-child(odd).is-visible {
+      animation: slideInLeft 0.8s var(--ease);
+    }
+
+    .timeline-item:nth-child(even).is-visible {
+      animation: slideInRight 0.8s var(--ease);
+    }
+
+    @keyframes slideInLeft {
+      0% { opacity: 0; transform: translateX(-40px) translateY(20px); }
+      100% { opacity: 1; transform: translateX(0) translateY(0); }
+    }
+
+    @keyframes slideInRight {
+      0% { opacity: 0; transform: translateX(40px) translateY(20px); }
+      100% { opacity: 1; transform: translateX(0) translateY(0); }
     }
 
     .timeline-year {
@@ -405,12 +475,28 @@
       color: var(--green-accent);
       line-height: 1;
       margin-bottom: 0.5rem;
+      min-height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      counter-increment: stat-counter;
     }
 
     .stat-label {
       font-size: 0.95rem;
       color: rgba(26, 26, 26, 0.75);
       font-weight: 500;
+    }
+
+    /* Stat Counter Animation */
+    @keyframes counterPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .stat-item.is-visible .stat-number {
+      animation: counterPulse 0.6s var(--ease);
     }
 
     /* Production Chart */
@@ -449,11 +535,24 @@
       background: linear-gradient(90deg, var(--green-accent), var(--green-light));
       border-radius: 4px;
       width: 0%;
-      transition: width 1.2s var(--ease) 0.2s;
+      opacity: 0;
+      box-shadow: 0 0 20px rgba(61, 122, 60, 0.3);
+      transition: width 1.2s var(--ease) 0.3s, opacity 0.8s var(--ease) 0.3s;
     }
 
     .chart-bar.is-visible .chart-bar-fill {
       opacity: 1;
+      box-shadow: 0 4px 20px rgba(61, 122, 60, 0.5);
+    }
+
+    @keyframes shimmer {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(1.2); }
+      100% { filter: brightness(1); }
+    }
+
+    .chart-bar.is-visible .chart-bar-fill {
+      animation: shimmer 0.8s var(--ease) 1.2s;
     }
 
     .chart-value {
@@ -1023,6 +1122,46 @@
 
     reveals.forEach(reveal => revealObserver.observe(reveal));
 
+    // Staggered reveals for diagram steps and timeline items
+    const diagramSteps = document.querySelectorAll('.diagram-step');
+    const diagramOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -30px 0px'
+    };
+
+    const diagramObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, index * 100);
+          diagramObserver.unobserve(entry.target);
+        }
+      });
+    }, diagramOptions);
+
+    diagramSteps.forEach(step => diagramObserver.observe(step));
+
+    // Timeline items with alternating animation
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    const timelineOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -40px 0px'
+    };
+
+    const timelineObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, index * 80);
+          timelineObserver.unobserve(entry.target);
+        }
+      });
+    }, timelineOptions);
+
+    timelineItems.forEach(item => timelineObserver.observe(item));
+
     // Hero Immersive Zoom-Out Animation
     const hero = document.getElementById('hero');
     const heroBg = document.getElementById('hero-bg');
@@ -1063,27 +1202,27 @@
       }
     });
 
-    // Chart animations
-    const chartBars = document.querySelectorAll('.chart-bar-fill, .cooking-fill');
+    // Chart animations with stagger
+    const chartBars = document.querySelectorAll('.chart-bar');
+    const cookingMethods = document.querySelectorAll('.cooking-method');
     const chartOptions = {
       threshold: 0.3,
       rootMargin: '0px 0px -30px 0px'
     };
 
     const chartObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
-          const targetWidth = entry.target.style.width;
-          entry.target.style.width = '0%';
           setTimeout(() => {
-            entry.target.style.width = targetWidth;
-          }, 50);
+            entry.target.classList.add('is-visible');
+          }, index * 100);
           chartObserver.unobserve(entry.target);
         }
       });
     }, chartOptions);
 
     chartBars.forEach(bar => chartObserver.observe(bar));
+    cookingMethods.forEach(method => chartObserver.observe(method));
 
     // Prevent body scroll during hero animation (optional)
     window.addEventListener('scroll', () => {
