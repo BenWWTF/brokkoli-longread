@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A deep dive into broccoli: its health science, cultural history, and global significance.">
+  <meta name="theme-color" content="#0A1A08">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+Pro:wght@400;600&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+  <title lang="en">The World's Most Underrated Vegetable</title>
+  <title lang="de">Das unterschätzteste Gemüse der Welt</title>
+  <style>
+    :root {
+      --text: #1A1A1A;
+      --white: #FFFFFF;
+      --green-dark: #2D5A27;
+      --green-accent: #3D7A3C;
+      --green-light: #A8D5A2;
+      --amber: #C17F24;
+      --blue: #2E6DA4;
+      --bg-dark: #0A1A08;
+      --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --font-serif: 'Libre Baskerville', serif;
+      --font-display: 'Playfair Display', serif;
+      --font-sans: 'Source Sans Pro', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: var(--font-serif);
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    body.no-scroll {
+      overflow: hidden;
+    }
+
+    /* Language Toggle */
+    .lang-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(45, 90, 39, 0.2);
+      border-radius: 6px;
+      padding: 0.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .lang-btn {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      background: var(--green-accent);
+      color: white;
+    }
+
+    .lang-btn:hover:not(.active) {
+      background: rgba(61, 122, 60, 0.1);
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1A3A16 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      color: var(--white);
+    }
+
+    .hero-broccoli {
+      width: 80%;
+      max-width: 600px;
+      height: 80%;
+      max-height: 600px;
+      margin-bottom: 5%;
+      filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.3));
+    }
+
+    .hero-content {
+      position: absolute;
+      bottom: 4rem;
+      left: 2rem;
+      right: 2rem;
+      max-width: 600px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s var(--ease) 0.4s, transform 0.8s var(--ease) 0.4s;
+    }
+
+    body.hero-done .hero-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero .subtitle {
+      font-family: var(--font-sans);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Language-specific content */
+    [lang="de"] { display: none; }
+    body.lang-de [lang="en"] { display: none; }
+    body.lang-de [lang="de"] { display: block; }
+
+    /* Section Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Sections */
+    section {
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem);
+    }
+
+    section.light {
+      background: var(--white);
+    }
+
+    section.dark {
+      background: var(--bg-dark);
+      color: var(--white);
+    }
+
+    section.accent-light {
+      background: rgba(168, 213, 162, 0.08);
+    }
+
+    /* Typography */
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-family: var(--font-sans);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: clamp(1rem, 2vw, 1.1rem);
+      line-height: 1.65;
+      margin-bottom: 1.2rem;
+    }
+
+    .lede {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--green-accent);
+      margin-bottom: 1.5rem;
+      max-width: 700px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .container-wide {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Health Section - Explainer Diagram */
+    .explainer-diagram {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(61, 122, 60, 0.06);
+      border-radius: 12px;
+      border: 2px solid var(--green-light);
+    }
+
+    .diagram-step {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--white);
+      border-left: 4px solid var(--green-accent);
+      border-radius: 8px;
+    }
+
+    .diagram-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .diagram-number {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--green-accent);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .diagram-text h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+    }
+
+    .diagram-text p {
+      font-size: 0.95rem;
+      color: rgba(26, 26, 26, 0.75);
+      margin: 0;
+    }
+
+    /* Cooking Chart */
+    .cooking-chart {
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+
+    .cooking-method {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: rgba(168, 213, 162, 0.1);
+      border-radius: 8px;
+    }
+
+    .cooking-method-name {
+      flex: 0 0 120px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .cooking-bar {
+      flex: 1;
+      height: 24px;
+      background: rgba(61, 122, 60, 0.15);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cooking-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green-accent), var(--green-light));
+      border-radius: 4px;
+      transition: width 1s var(--ease) 0.3s;
+      width: 0%;
+    }
+
+    .cooking-method.is-visible .cooking-fill {
+      opacity: 1;
+    }
+
+    .cooking-percent {
+      flex: 0 0 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--green-accent);
+      text-align: right;
+    }
+
+    /* Culture Section - Timeline */
+    .timeline {
+      max-width: 800px;
+      margin: 2rem auto;
+      position: relative;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+
+    .timeline-item.is-visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .timeline-year {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--amber);
+    }
+
+    .timeline-content h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .timeline-content p {
+      font-size: 0.95rem;
+      color: rgba(26, 26, 26, 0.8);
+      margin: 0;
+    }
+
+    /* Stats Strip */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+      padding: 2rem;
+      background: rgba(61, 122, 60, 0.08);
+      border-radius: 12px;
+    }
+
+    .stat-item {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+
+    .stat-item.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--green-accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: rgba(26, 26, 26, 0.75);
+      font-weight: 500;
+    }
+
+    /* Production Chart */
+    .production-chart {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(168, 213, 162, 0.06);
+      border-radius: 12px;
+    }
+
+    .chart-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-country {
+      flex: 0 0 120px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .chart-bar-bg {
+      flex: 1;
+      height: 32px;
+      background: rgba(61, 122, 60, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chart-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green-accent), var(--green-light));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 1.2s var(--ease) 0.2s;
+    }
+
+    .chart-bar.is-visible .chart-bar-fill {
+      opacity: 1;
+    }
+
+    .chart-value {
+      flex: 0 0 100px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--green-accent);
+      text-align: right;
+    }
+
+    /* Pull Quote */
+    .pull-quote {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: var(--green-dark);
+      color: var(--white);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .pull-quote p {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+
+    .pull-quote-author {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    /* Callout Box */
+    .callout {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(193, 127, 36, 0.08);
+      border-left: 4px solid var(--amber);
+      border-radius: 8px;
+    }
+
+    .callout h4 {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .callout p {
+      font-size: 0.95rem;
+      margin-bottom: 0;
+    }
+
+    /* Closing */
+    .closing {
+      background: var(--bg-dark);
+      color: var(--white);
+      text-align: center;
+      padding: 6rem 2rem;
+    }
+
+    .closing h2 {
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+
+    .closing p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #030607;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 2rem;
+      text-align: center;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--green-light);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 768px) {
+      .hero-content {
+        bottom: 2rem;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .timeline-year {
+        font-size: 1.4rem;
+      }
+
+      .stats-strip {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .pull-quote p {
+        font-size: 1.4rem;
+      }
+
+      .diagram-step {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .diagram-step:not(:first-child) {
+        margin-top: 1.5rem;
+      }
+
+      .lang-toggle {
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 0.75rem;
+      }
+
+      .lang-btn {
+        padding: 0.3rem 0.6rem;
+      }
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal,
+      .reveal.is-visible {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" data-lang="en" lang="en">EN</button>
+    <button class="lang-btn" data-lang="de" lang="de">DE</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <svg class="hero-broccoli" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+      <!-- Broccoli illustration -->
+      <!-- Stem -->
+      <rect x="85" y="160" width="30" height="70" fill="#5A7D4F" rx="4"/>
+      <!-- Main floret clusters -->
+      <g fill="#2D5A27" opacity="0.9">
+        <!-- Center top -->
+        <circle cx="100" cy="80" r="35"/>
+        <!-- Left florets -->
+        <circle cx="65" cy="100" r="28"/>
+        <circle cx="50" cy="130" r="22"/>
+        <!-- Right florets -->
+        <circle cx="135" cy="100" r="28"/>
+        <circle cx="150" cy="130" r="22"/>
+        <!-- Side florets -->
+        <circle cx="75" cy="50" r="20"/>
+        <circle cx="125" cy="50" r="20"/>
+      </g>
+      <!-- Highlight details -->
+      <g fill="#3D7A3C" opacity="0.6">
+        <circle cx="95" cy="75" r="8"/>
+        <circle cx="60" cy="95" r="6"/>
+        <circle cx="140" cy="95" r="6"/>
+        <circle cx="100" cy="120" r="7"/>
+      </g>
+    </svg>
+    <div class="hero-content">
+      <h1 lang="en">The World's Most Underrated Vegetable</h1>
+      <h1 lang="de">Das unterschätzteste Gemüse der Welt</h1>
+      <p class="subtitle" lang="en">A deep dive into the green vegetable that divides families, fuels science, and feeds half the world.</p>
+      <p class="subtitle" lang="de">Ein tiefgehendes Verständnis des grünen Gemüses, das Familien spaltet, die Wissenschaft antreibt und die halbe Welt ernährt.</p>
+    </div>
+  </section>
+
+  <!-- Health Section -->
+  <section class="light">
+    <div class="container">
+      <h2 lang="en" class="reveal">The Science of Green</h2>
+      <h2 lang="de" class="reveal">Die Wissenschaft des Grüns</h2>
+      <p class="lede reveal" lang="en">Broccoli contains compounds that don't actually exist—until you eat it.</p>
+      <p class="lede reveal" lang="de">Brokkoli enthält Stoffe, die nicht wirklich existieren – bis man ihn isst.</p>
+
+      <p class="reveal" lang="en">
+        The most powerful compound in broccoli is sulforaphane, a potent isothiocyanate with remarkable biological effects. But here's the catch: sulforaphane doesn't exist in raw broccoli. Instead, the plant stores two separate compounds in different cellular compartments—glucoraphanin and the enzyme myrosinase. Only when you bite into broccoli, or cut it with a knife, do these compartments break open. The two compounds mix for the first time, and a chemical reaction occurs. Broccoli, quite literally, synthesizes its own medicine in response to being eaten.
+      </p>
+      <p class="reveal" lang="de">
+        Die stärkste Verbindung in Brokkoli ist Sulforaphan, ein starkes Isothiocyanat mit bemerkenswerten biologischen Wirkungen. Aber hier ist der Haken: Sulforaphan existiert nicht im rohen Brokkoli. Stattdessen speichert die Pflanze zwei separate Verbindungen in verschiedenen Zellkompartimenten – Glucoraphanin und das Enzym Myrosinase. Nur wenn man in Brokkoli beißt oder ihn mit einem Messer schneidet, brechen diese Kompartimente auf. Die beiden Verbindungen vermischen sich zum ersten Mal, und eine chemische Reaktion tritt ein. Brokkoli synthetisiert buchstäblich seine eigene Medizin als Reaktion auf das Essen.
+      </p>
+
+      <div class="explainer-diagram reveal">
+        <div class="diagram-step reveal">
+          <div class="diagram-number">1</div>
+          <div class="diagram-text">
+            <h4 lang="en">Cell Damage</h4>
+            <h4 lang="de">Zellschaden</h4>
+            <p lang="en">Chewing or cutting breaks cell walls</p>
+            <p lang="de">Kauen oder Schneiden bricht Zellwände</p>
+          </div>
+        </div>
+        <div class="diagram-step reveal">
+          <div class="diagram-number">2</div>
+          <div class="diagram-text">
+            <h4 lang="en">Chemical Reaction</h4>
+            <h4 lang="de">Chemische Reaktion</h4>
+            <p lang="en">Glucoraphanin + myrosinase → sulforaphane</p>
+            <p lang="de">Glucoraphanin + Myrosinase → Sulforaphan</p>
+          </div>
+        </div>
+        <div class="diagram-step reveal">
+          <div class="diagram-number">3</div>
+          <div class="diagram-text">
+            <h4 lang="en">Nrf2 Activation</h4>
+            <h4 lang="de">Nrf2-Aktivierung</h4>
+            <p lang="en">Sulforaphane activates the body's antioxidant defense</p>
+            <p lang="de">Sulforaphan aktiviert die körpereigene antioxidative Abwehr</p>
+          </div>
+        </div>
+        <div class="diagram-step reveal">
+          <div class="diagram-number">4</div>
+          <div class="diagram-text">
+            <h4 lang="en">Health Effects</h4>
+            <h4 lang="de">Gesundheitseffekte</h4>
+            <p lang="en">Inflammation reduction, cancer protection, detoxification</p>
+            <p lang="de">Entzündungsabbau, Krebsschutz, Entgiftung</p>
+          </div>
+        </div>
+      </div>
+
+      <h3 lang="en" class="reveal">The 40-Minute Rule</h3>
+      <h3 lang="de" class="reveal">Die 40-Minuten-Regel</h3>
+      <p class="reveal" lang="en">
+        There's one technique with extraordinary evidence behind it: chop your broccoli and wait 40 minutes before cooking. During this window, myrosinase converts glucoraphanin to sulforaphane. Sulforaphane itself is heat-stable—once formed, cooking won't destroy it. But if you cook raw broccoli immediately, you destroy the enzyme before the reaction completes, leaving most of the glucoraphanin unconverted and useless. The 40-minute rule isn't folklore. It's been validated in peer-reviewed studies as one of the few food preparation techniques that measurably changes a health compound's bioavailability.
+      </p>
+      <p class="reveal" lang="de">
+        Es gibt eine Technik mit außerordentlichen Belegen: Schneiden Sie Ihren Brokkoli und warten Sie 40 Minuten, bevor Sie ihn kochen. Während dieser Zeit wandelt Myrosinase Glucoraphanin in Sulforaphan um. Sulforaphan selbst ist hitzebeständig – einmal gebildet, wird Kochen es nicht zerstören. Aber wenn Sie rohen Brokkoli sofort kochen, zerstören Sie das Enzym, bevor die Reaktion abgeschlossen ist, was das meiste Glucoraphanin unumgewandelt und nutzlos lässt. Die 40-Minuten-Regel ist keine Folklore. Sie wurde in von Fachkollegen begutachteten Studien validiert als eine der wenigen Lebensmittelzubereitungstechniken, die die Bioverfügbarkeit eines Gesundheitsstoffs messbar verändern.
+      </p>
+
+      <h3 lang="en" class="reveal">Cooking Method Matters</h3>
+      <h3 lang="de" class="reveal">Zubereitungsmethode ist wichtig</h3>
+      <div class="cooking-chart reveal">
+        <div class="cooking-method reveal">
+          <div class="cooking-method-name" lang="en">Raw</div>
+          <div class="cooking-method-name" lang="de" style="display:none;">Roh</div>
+          <div class="cooking-bar">
+            <div class="cooking-fill" style="width: 100%;"></div>
+          </div>
+          <div class="cooking-percent">100%</div>
+        </div>
+        <div class="cooking-method reveal">
+          <div class="cooking-method-name" lang="en">Steamed (3-5 min)</div>
+          <div class="cooking-method-name" lang="de" style="display:none;">Gedünstet (3–5 Min)</div>
+          <div class="cooking-bar">
+            <div class="cooking-fill" style="width: 85%;"></div>
+          </div>
+          <div class="cooking-percent">85%</div>
+        </div>
+        <div class="cooking-method reveal">
+          <div class="cooking-method-name" lang="en">Stir-fried</div>
+          <div class="cooking-method-name" lang="de" style="display:none;">Geröstet</div>
+          <div class="cooking-bar">
+            <div class="cooking-fill" style="width: 65%;"></div>
+          </div>
+          <div class="cooking-percent">65%</div>
+        </div>
+        <div class="cooking-method reveal">
+          <div class="cooking-method-name" lang="en">Microwaved</div>
+          <div class="cooking-method-name" lang="de" style="display:none;">Mikrowelle</div>
+          <div class="cooking-bar">
+            <div class="cooking-fill" style="width: 75%;"></div>
+          </div>
+          <div class="cooking-percent">75%</div>
+        </div>
+        <div class="cooking-method reveal">
+          <div class="cooking-method-name" lang="en">Boiled</div>
+          <div class="cooking-method-name" lang="de" style="display:none;">Gekocht</div>
+          <div class="cooking-bar">
+            <div class="cooking-fill" style="width: 30%;"></div>
+          </div>
+          <div class="cooking-percent">30%</div>
+        </div>
+      </div>
+
+      <p class="reveal" lang="en">
+        Boiling destroys both the enzyme and leaches the glucosinolates into the water. The cooking water becomes nutritious—but we discard it. Steaming is the gold standard: it preserves 70–90% of glucosinolates and keeps myrosinase intact. Add the mustard trick: sprinkle powdered mustard seed (which contains heat-stable myrosinase) onto cooked broccoli, and the reaction completes even after cooking.
+      </p>
+      <p class="reveal" lang="de">
+        Kochen zerstört sowohl das Enzym als auch die Glucosinolate und spült sie ins Wasser. Das Kochwasser wird nahrhaft – aber wir werfen es weg. Dünsten ist der Goldstandard: Es bewahrt 70–90% der Glucosinolate und hält die Myrosinase intakt. Fügen Sie den Senftrip hinzu: Streuen Sie Senfpulver (das hitzestabile Myrosinase enthält) auf gekochten Brokkoli, und die Reaktion ist auch nach dem Kochen abgeschlossen.
+      </p>
+    </div>
+  </section>
+
+  <!-- Culture Section -->
+  <section class="accent-light">
+    <div class="container">
+      <h2 lang="en" class="reveal">A Vegetable with a Passport</h2>
+      <h2 lang="de" class="reveal">Ein Gemüse mit Pass</h2>
+      <p class="lede reveal" lang="en">From Mediterranean antiquity to American politics, broccoli has an unlikely cultural history.</p>
+      <p class="lede reveal" lang="de">Von mediterraner Antike bis zur amerikanischen Politik hat Brokkoli eine unwahrscheinliche Kulturgeschichte.</p>
+
+      <div class="timeline reveal">
+        <div class="timeline-item reveal">
+          <div class="timeline-year" lang="en">~79 CE</div>
+          <div class="timeline-year" lang="de" style="display:none;">~79 n. Chr.</div>
+          <div class="timeline-content">
+            <h4 lang="en">Pliny Praises Broccoli</h4>
+            <h4 lang="de" style="display:none;">Plinius lobt Brokkoli</h4>
+            <p lang="en">Roman naturalist Pliny the Elder calls it "one of the most delicious vegetables" in his *Naturalis Historia*.</p>
+            <p lang="de" style="display:none;">Der römische Naturalist Plinius der Ältere nennt es in seiner *Naturalis Historia* "eines der köstlichsten Gemüse".</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-year" lang="en">1533</div>
+          <div class="timeline-year" lang="de" style="display:none;">1533</div>
+          <div class="timeline-content">
+            <h4 lang="en">Catherine de Medici</h4>
+            <h4 lang="de" style="display:none;">Katharina von Medici</h4>
+            <p lang="en">Italian seeds arrive in France. The vegetable is initially called "Italian asparagus" by French nobility.</p>
+            <p lang="de" style="display:none;">Italienische Samen kommen nach Frankreich. Das Gemüse wird von französischen Adligen zunächst "italienischer Spargel" genannt.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-year" lang="en">1922</div>
+          <div class="timeline-year" lang="de" style="display:none;">1922</div>
+          <div class="timeline-content">
+            <h4 lang="en">The D'Arrigo Brothers</h4>
+            <h4 lang="de" style="display:none;">Die D'Arrigo-Brüder</h4>
+            <p lang="en">Sicilian immigrants Stephano and Andrea begin commercial cultivation in California's Santa Clara Valley. They pioneer "Andy Boy" brand—still sold today.</p>
+            <p lang="de" style="display:none;">Die sizilianischen Einwanderer Stephano und Andrea beginnen mit dem kommerziellen Anbau in Kaliforniens Santa Clara Valley. Sie begründen die Marke "Andy Boy" – noch heute im Handel.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-year" lang="en">1990</div>
+          <div class="timeline-year" lang="de" style="display:none;">1990</div>
+          <div class="timeline-content">
+            <h4 lang="en">George H.W. Bush's War on Broccoli</h4>
+            <h4 lang="de" style="display:none;">George H.W. Bushs Krieg gegen Brokkoli</h4>
+            <p lang="en">President Bush bans broccoli from Air Force One: "I do not like broccoli... and I'm not going to eat any more broccoli." Growers ship 10 tons to the White House in protest.</p>
+            <p lang="de" style="display:none;">Präsident Bush verbietet Brokkoli auf Air Force One: „Ich mag keinen Brokkoli... und ich werde keinen mehr essen." Züchter schicken 10 Tonnen zum Weißen Haus als Protest.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-year" lang="en">2012</div>
+          <div class="timeline-year" lang="de" style="display:none;">2012</div>
+          <div class="timeline-content">
+            <h4 lang="en">The "Broccoli Problem"</h4>
+            <h4 lang="de" style="display:none;">Das "Brokkoli-Problem"</h4>
+            <p lang="en">Justice Antonin Scalia raises broccoli as a hypothetical in Supreme Court ACA arguments—it becomes shorthand for government overreach in political discourse.</p>
+            <p lang="de" style="display:none;">Richter Antonin Scalia erwähnt Brokkoli hypothetisch in ACA-Argumenten vor dem Obersten Gericht – es wird zum Schlagwort für Regierungsmacht im politischen Diskurs.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-year" lang="en">2016</div>
+          <div class="timeline-year" lang="de" style="display:none;">2016</div>
+          <div class="timeline-content">
+            <h4 lang="en">The Broccoli Tree Goes Viral</h4>
+            <h4 lang="de" style="display:none;">Der Brokkoli-Baum wird viral</h4>
+            <p lang="en">A photo of a lone tree in Aberfeldy, Scotland—shaped exactly like a broccoli floret—becomes a global internet sensation.</p>
+            <p lang="de" style="display:none;">Ein Foto eines einsamen Baumes in Aberfeldy, Schottland – geformt wie ein Brokkoli-Röschen – wird zu einer weltweiten Internet-Sensation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout reveal" lang="en">
+        <h4>The Supertaster Gene</h4>
+        <p>About 25% of the population carries the TAS2R38 gene variant on chromosome 7, making them "supertasters." They experience broccoli's glucosinolates as intensely bitter. This is genuine genetics, not a character flaw—which explains why broccoli divides people so reliably.</p>
+      </div>
+      <div class="callout reveal" lang="de" style="display:none;">
+        <h4>Das Supertaster-Gen</h4>
+        <p>Etwa 25% der Bevölkerung trägt die TAS2R38-Genvariante auf Chromosom 7, was sie zu "Supertastern" macht. Sie erleben Brokkolist Glucosinolate als intensiv bitter. Dies ist echte Genetik, kein Charakterfehler – was erklärt, warum Brokkoli Menschen so zuverlässig spaltet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Society Section -->
+  <section class="light">
+    <div class="container-wide">
+      <h2 lang="en" class="reveal">The Politics of a Vegetable</h2>
+      <h2 lang="de" class="reveal">Die Politik eines Gemüses</h2>
+      <p class="lede reveal" lang="en">Production, consumption, and control: how broccoli became a global commodity.</p>
+      <p class="lede reveal" lang="de">Produktion, Verbrauch und Kontrolle: Wie Brokkoli zur globalen Ware wurde.</p>
+
+      <h3 lang="en" class="reveal">Global Production Dominance</h3>
+      <h3 lang="de" class="reveal" style="display:none;">Globale Produktionsdominanz</h3>
+      <div class="production-chart reveal">
+        <div class="chart-bar reveal">
+          <div class="chart-country" lang="en">China</div>
+          <div class="chart-country" lang="de" style="display:none;">China</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: 88%;"></div>
+          </div>
+          <div class="chart-value">9.2M</div>
+        </div>
+        <div class="chart-bar reveal">
+          <div class="chart-country" lang="en">India</div>
+          <div class="chart-country" lang="de" style="display:none;">Indien</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: 5%;"></div>
+          </div>
+          <div class="chart-value">520K</div>
+        </div>
+        <div class="chart-bar reveal">
+          <div class="chart-country" lang="en">USA</div>
+          <div class="chart-country" lang="de" style="display:none;">USA</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: 3.2%;"></div>
+          </div>
+          <div class="chart-value">340K</div>
+        </div>
+        <div class="chart-bar reveal">
+          <div class="chart-country" lang="en">Spain</div>
+          <div class="chart-country" lang="de" style="display:none;">Spanien</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: 2%;"></div>
+          </div>
+          <div class="chart-value">210K</div>
+        </div>
+        <div class="chart-bar reveal">
+          <div class="chart-country" lang="en">Mexico</div>
+          <div class="chart-country" lang="de" style="display:none;">Mexiko</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: 1.8%;"></div>
+          </div>
+          <div class="chart-value">190K</div>
+        </div>
+      </div>
+
+      <p class="reveal" lang="en">
+        China dominates by an astonishing margin—producing 85–90% of the world's broccoli and cauliflower combined. The United States, almost entirely concentrated in California's Salinas Valley (the "salad bowl of America"), produces roughly 1.2–1.4 million tonnes annually. Yet China's production is more than seven times larger.
+      </p>
+      <p class="reveal" lang="de">
+        China dominiert in erstaunlichem Ausmaß – und produziert 85–90% des Welt-Brokkoli- und Blumenkohlaufkommens. Die USA, fast vollständig konzentriert im kalifornischen Salinas Valley (die "Salatschüssel Amerikas"), produzieren jährlich etwa 1,2–1,4 Millionen Tonnen. Doch Chinas Produktion ist mehr als siebenmal größer.
+      </p>
+
+      <h3 lang="en" class="reveal">The Environmental Paradox</h3>
+      <h3 lang="de" class="reveal" style="display:none;">Das Umweltparadoxon</h3>
+      <div class="stats-strip reveal">
+        <div class="stat-item reveal">
+          <div class="stat-number" lang="en">0.4–0.5</div>
+          <div class="stat-number" lang="de" style="display:none;">0,4–0,5</div>
+          <div class="stat-label" lang="en">kg CO₂-eq per kg<br>(vs. beef: 27 kg)</div>
+          <div class="stat-label" lang="de" style="display:none;">kg CO₂-eq pro kg<br>(vs. Rind: 27 kg)</div>
+        </div>
+        <div class="stat-item reveal">
+          <div class="stat-number" lang="en">285</div>
+          <div class="stat-number" lang="de" style="display:none;">285</div>
+          <div class="stat-label" lang="en">liters water per kg<br>(vs. almonds: 3,500)</div>
+          <div class="stat-label" lang="de" style="display:none;">Liter Wasser pro kg<br>(vs. Mandeln: 3.500)</div>
+        </div>
+        <div class="stat-item reveal">
+          <div class="stat-number" lang="en">$12–15B</div>
+          <div class="stat-number" lang="de" style="display:none;">12–15 Mrd. $</div>
+          <div class="stat-label" lang="en">global market value<br>(2022–2023)</div>
+          <div class="stat-label" lang="de" style="display:none;">globaler Marktwert<br>(2022–2023)</div>
+        </div>
+      </div>
+
+      <p class="reveal" lang="en">
+        Broccoli is remarkably efficient: its carbon footprint and water use are low relative to its nutrient density. Yet the concentration of American production in drought-prone California creates real tension. The Salinas River aquifer faces seawater intrusion from over-pumping. Climate change is expected to shift growing regions northward. And despite its efficiency, roughly 20–40% of broccoli grown globally never reaches consumers—it's wasted before sale.
+      </p>
+      <p class="reveal" lang="de">
+        Brokkoli ist bemerkenswert effizient: Sein CO₂-Fußabdruck und Wasserverbrauch sind gering im Verhältnis zu seiner Nährstoffdichte. Doch die Konzentration der amerikanischen Produktion im trockenheitsanfälligen Kalifornien schafft echte Spannungen. Der Salinas-River-Aquifer droht durch Übernutzung zu versalzen. Der Klimawandel wird die Anbauregionen nach Norden verschieben. Und trotz seiner Effizienz erreicht etwa 20–40% des weltweit angebauten Brokkoli die Verbraucher nicht – er wird vor dem Verkauf verschwendet.
+      </p>
+
+      <div class="pull-quote reveal" lang="en">
+        <p>"The most powerful compound in broccoli doesn't exist until you eat it."</p>
+        <p class="pull-quote-author">— The science of sulforaphane</p>
+      </div>
+      <div class="pull-quote reveal" lang="de" style="display:none;">
+        <p>"Die mächtigste Verbindung in Brokkoli existiert erst, wenn man ihn isst."</p>
+        <p class="pull-quote-author">— Die Wissenschaft des Sulforaphans</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing Section -->
+  <section class="closing">
+    <div class="container">
+      <h2 lang="en" class="reveal">A Second Look</h2>
+      <h2 lang="de" class="reveal" style="display:none;">Ein zweiter Blick</h2>
+      <p class="reveal" lang="en">
+        Broccoli tells us something surprising about nutrition science: we systematically undervalue the everyday. A plant that's been cultivated for 2,000 years, that fed empires and now feeds billions, is still dismissed as "healthy but boring" in popular culture.
+      </p>
+      <p class="reveal" lang="de" style="display:none;">
+        Brokkoli erzählt uns etwas Überraschendes über Ernährungswissenschaft: Wir unterschätzen das Alltägliche systematisch. Eine Pflanze, die 2.000 Jahre lang kultiviert wurde, die Imperien ernährte und jetzt Milliarden Menschen ernährt, wird in der Populärkultur immer noch als "gesund, aber langweilig" abgetan.
+      </p>
+
+      <p class="reveal" lang="en">
+        Yet the evidence is mounting: sulforaphane may protect against cancer, diabetes, and infection. The 40-minute rule shows that food preparation—timing, technique, even adding mustard powder—can measurably alter a health compound's availability. The data suggests a simple action: tonight, when you cook broccoli, chop it first. Wait 40 minutes. Then cook gently. The extra effort takes 40 minutes of your time and produces measurable changes in your cells.
+      </p>
+      <p class="reveal" lang="de" style="display:none;">
+        Doch die Belege mehren sich: Sulforaphan kann vor Krebs, Diabetes und Infektionen schützen. Die 40-Minuten-Regel zeigt, dass Lebensmittelzubereitung – Timing, Technik, sogar das Hinzufügen von Senfpulver – die Verfügbarkeit eines Gesundheitsstoffs messbar verändern kann. Die Daten deuten auf eine einfache Aktion hin: Heute Abend, wenn du Brokkoli kochst, hacke ihn zuerst. Warten Sie 40 Minuten. Dann sanft garen. Die zusätzliche Mühe kostet 40 Minuten deiner Zeit und erzeugt messbare Veränderungen in deinen Zellen.
+      </p>
+
+      <p class="reveal" lang="en">
+        This is what broccoli teaches us: that the most transformative science often happens in the kitchen, not the lab. That culture and biology are inseparable. And that the overlooked vegetable on your plate might contain more wisdom than we've given it credit for.
+      </p>
+      <p class="reveal" lang="de" style="display:none;">
+        Das ist das, was uns Brokkoli lehrt: dass die transformativste Wissenschaft oft in der Küche stattfindet, nicht im Labor. Dass Kultur und Biologie untrennbar sind. Und dass das übersehene Gemüse auf deinem Teller mehr Weisheit enthalten könnte, als wir ihm bisher zugestanden haben.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p lang="en">
+      A scrollytelling exploration using research from Johns Hopkins, FAO, and peer-reviewed nutritional science.
+    </p>
+    <p lang="de" style="display:none;">
+      Eine Scroll-Story-Erkundung mit Forschung von Johns Hopkins, FAO und wissenschaftlicher Fachliteratur zur Ernährung.
+    </p>
+    <p>
+      <a href="https://github.com/missbach/brokkoli-longread" lang="en">Source on GitHub</a>
+      <a href="https://github.com/missbach/brokkoli-longread" lang="de" style="display:none;">Quelle auf GitHub</a>
+    </p>
+  </footer>
+
+  <script>
+    // Language Toggle
+    const langButtons = document.querySelectorAll('.lang-btn');
+    const htmlLang = document.documentElement;
+
+    langButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        langButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (lang === 'de') {
+          document.body.classList.add('lang-de');
+          htmlLang.lang = 'de';
+        } else {
+          document.body.classList.remove('lang-de');
+          htmlLang.lang = 'en';
+        }
+      });
+    });
+
+    // Reveal Animation with IntersectionObserver
+    const reveals = document.querySelectorAll('.reveal');
+    const revealOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, revealOptions);
+
+    reveals.forEach(reveal => revealObserver.observe(reveal));
+
+    // Hero Zoom-Out Animation
+    const hero = document.getElementById('hero');
+    const broccoli = document.querySelector('.hero-broccoli');
+
+    let scrollProgress = 0;
+    window.addEventListener('scroll', () => {
+      const heroHeight = hero.offsetHeight;
+      const scrollY = window.scrollY;
+
+      if (scrollY < heroHeight) {
+        scrollProgress = scrollY / (heroHeight * 0.5);
+        scrollProgress = Math.min(scrollProgress, 1);
+
+        const scale = 1 - (scrollProgress * 0.3);
+        const translateY = scrollProgress * 60;
+        const opacity = 1 - (scrollProgress * 0.3);
+
+        broccoli.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+        broccoli.style.opacity = opacity;
+      }
+
+      // Hero done - show content
+      if (scrollProgress > 0.6) {
+        document.body.classList.add('hero-done');
+      } else {
+        document.body.classList.remove('hero-done');
+      }
+    });
+
+    // Chart animations
+    const chartBars = document.querySelectorAll('.chart-bar-fill, .cooking-fill');
+    const chartOptions = {
+      threshold: 0.3,
+      rootMargin: '0px 0px -30px 0px'
+    };
+
+    const chartObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const targetWidth = entry.target.style.width;
+          entry.target.style.width = '0%';
+          setTimeout(() => {
+            entry.target.style.width = targetWidth;
+          }, 50);
+          chartObserver.unobserve(entry.target);
+        }
+      });
+    }, chartOptions);
+
+    chartBars.forEach(bar => chartObserver.observe(bar));
+
+    // Prevent body scroll during hero animation (optional)
+    window.addEventListener('scroll', () => {
+      if (window.scrollY === 0) {
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+</body>
+</html>
