@@ -110,6 +110,7 @@
       text-align: center;
       max-width: 860px;
       padding: 0 2rem;
+      opacity: 0; /* GSAP animates this in on scroll */
     }
 
     .hero-content h1 {
@@ -228,7 +229,8 @@
     .container      { max-width: 680px; margin: 0 auto; }
     .container-wide { max-width: 960px; margin: 0 auto; }
 
-    .section-rule { width: 40px; height: 2px; background: var(--green-accent); margin-bottom: 1.5rem; }
+    .section-rule { width: 0; height: 2px; background: var(--green-accent); margin-bottom: 1.5rem; transition: width 0.7s var(--ease) 0.2s; }
+    .section-rule.rule-visible { width: 40px; }
     .section-rule.amber { background: var(--amber); }
     .section-rule.blue  { background: var(--blue); }
 
@@ -264,8 +266,9 @@
     }
     @media (max-width: 767px) { .mechanism-counter { display: none; } }
 
-    .mechanism-step { padding: 2rem 0; border-top: 1px solid var(--rule); }
+    .mechanism-step { padding: 2rem 0.75rem; border-top: 1px solid var(--rule); border-radius: 4px; transition: background-color 0.45s var(--ease), padding-left 0.3s var(--ease); }
     .mechanism-step:last-child { border-bottom: 1px solid var(--rule); }
+    .mechanism-step.is-active-step { background: rgba(61,122,60,0.06); padding-left: 1.25rem; }
 
     .mechanism-step-label {
       font-family: var(--font-sans);
@@ -315,7 +318,14 @@
     .callout p { font-size: 0.95rem; color: var(--text-secondary); margin: 0; line-height: 1.65; }
 
     /* ─── Mid-Page Zoom ─────────────────────────────────────────────── */
-    .mid-zoom-container { position: relative; height: 280vh; }
+    .mid-zoom-container {
+      position: relative;
+      height: 280vh;
+      /* Full-bleed breakout from container-wide */
+      width: 100vw;
+      left: 50%;
+      margin-left: -50vw;
+    }
     .mid-zoom-section {
       position: sticky; top: 0; height: 100vh;
       background: var(--bg-dark);
@@ -345,13 +355,20 @@
     }
     .mid-zoom-label.visible { opacity: 1; transform: translateY(0); }
 
-    /* ─── Bush Quote ─────────────────────────────────────────────────── */
+    /* ─── Bush Quote (sticky scroll — lines reveal one by one) ─────── */
+    .bush-quote-outer {
+      position: relative;
+      height: 420vh;
+    }
     .bush-quote-section {
+      position: sticky;
+      top: 0;
+      height: 100vh;
       background: var(--bg-dark);
-      min-height: 100vh;
       display: flex;
       align-items: center;
       padding: clamp(6rem, 14vw, 12rem) clamp(2rem, 6vw, 5rem);
+      overflow: hidden;
     }
 
     .bush-quote {
@@ -379,16 +396,8 @@
       color: var(--white);
       line-height: 1.25;
       margin-bottom: 0.1em;
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+      opacity: 0; /* GSAP animates to 1 */
     }
-
-    .bush-line.bush-visible               { opacity: 1; transform: none; }
-    .bush-line:nth-child(2).bush-visible  { transition-delay: 0s; }
-    .bush-line:nth-child(3).bush-visible  { transition-delay: 0.18s; }
-    .bush-line:nth-child(4).bush-visible  { transition-delay: 0.36s; }
-    .bush-line:nth-child(5).bush-visible  { transition-delay: 0.54s; }
 
     .bush-cite {
       display: block;
@@ -398,10 +407,8 @@
       color: rgba(255,255,255,0.3);
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      opacity: 0;
-      transition: opacity 0.8s var(--ease) 0.9s;
+      opacity: 0; /* GSAP animates to 1 */
     }
-    .bush-cite.bush-visible { opacity: 1; }
 
     /* ─── Stat Highlight ────────────────────────────────────────────── */
     .stat-highlight { padding: 4rem 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin: 3rem 0; text-align: center; }
@@ -427,6 +434,14 @@
     .stat-item:nth-child(3).is-visible { transition-delay: 0.2s; }
     .stat-number { font-family: var(--font-display); font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 700; color: var(--green-accent); display: block; margin-bottom: 0.5rem; line-height: 1; }
     .stat-label  { font-family: var(--font-sans); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45; }
+    @keyframes stat-pop {
+      0%   { transform: scale(0.8); opacity: 0; }
+      70%  { transform: scale(1.06); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .stat-item.is-visible .stat-number { animation: stat-pop 0.55s var(--ease) both; }
+    .stat-item:nth-child(2).is-visible .stat-number { animation-delay: 0.1s; }
+    .stat-item:nth-child(3).is-visible .stat-number { animation-delay: 0.2s; }
 
     /* ─── Closing ───────────────────────────────────────────────────── */
     .closing { background: var(--bg-dark); color: var(--white); padding: 7rem 2rem; text-align: center; }
@@ -623,16 +638,18 @@
     </div>
   </section>
 
-  <!-- ── Bush Quote (full-viewport, line-by-line stagger) ───────────── -->
-  <div class="bush-quote-section">
-    <blockquote class="bush-quote" id="bush-quote">
-      <span class="bush-mark" aria-hidden="true">&ldquo;</span>
-      <span class="bush-line">I do not like broccoli.</span>
-      <span class="bush-line">And I haven't liked it since I was a little kid</span>
-      <span class="bush-line">and my mother made me eat it.</span>
-      <span class="bush-line">And I'm President of the United States,<br>and I'm not going to eat any more broccoli.</span>
-      <cite class="bush-cite">George H.W. Bush &mdash; President of the United States, 1990</cite>
-    </blockquote>
+  <!-- ── Bush Quote (full-viewport, sticky — lines reveal line-by-line on scroll) ── -->
+  <div class="bush-quote-outer" id="bush-quote-outer">
+    <div class="bush-quote-section">
+      <blockquote class="bush-quote">
+        <span class="bush-mark" aria-hidden="true">&ldquo;</span>
+        <span class="bush-line">I do not like broccoli.</span>
+        <span class="bush-line">And I haven't liked it since I was a little kid</span>
+        <span class="bush-line">and my mother made me eat it.</span>
+        <span class="bush-line">And I'm President of the United States,<br>and I'm not going to eat any more broccoli.</span>
+        <cite class="bush-cite">George H.W. Bush &mdash; President of the United States, 1990</cite>
+      </blockquote>
+    </div>
   </div>
 
   <!-- ── Society ─────────────────────────────────────────────────────── -->
@@ -784,8 +801,8 @@
           ease: 'none',
           scrollTrigger: {
             trigger: '#hero-container',
-            start: '20% bottom',
-            end: '45% bottom',
+            start: '55% top',   // text starts after zoom is mostly done
+            end: '80% top',
             scrub: 1,
           }
         }
@@ -824,22 +841,42 @@
       document.getElementById('scroll-hint')?.classList.add('hidden');
     }
 
-    // ── Bush Quote: line-by-line stagger (IO, fires once on entry) ────
-    const bushQuote = document.getElementById('bush-quote');
-    if (bushQuote) {
-      const bushEls = bushQuote.querySelectorAll('.bush-line, .bush-cite');
+    // ── Bush Quote: GSAP scroll-driven line-by-line reveal ───────────
+    const bushOuter = document.getElementById('bush-quote-outer');
+    if (bushOuter) {
+      const bushEls = [
+        ...gsap.utils.toArray('.bush-line'),
+        document.querySelector('.bush-cite'),
+      ].filter(Boolean);
+
       if (reduced) {
-        bushEls.forEach(el => el.classList.add('bush-visible'));
+        bushEls.forEach(el => gsap.set(el, { opacity: 1, y: 0 }));
       } else {
-        const bushObs = new IntersectionObserver(entries => {
-          if (entries[0].isIntersecting) {
-            bushEls.forEach(el => el.classList.add('bush-visible'));
-            bushObs.disconnect();
-          }
-        }, { threshold: 0.2 });
-        bushObs.observe(bushQuote);
+        bushEls.forEach((el, i) => {
+          gsap.fromTo(el,
+            { opacity: 0, y: 18 },
+            {
+              opacity: 1, y: 0,
+              duration: 0.7,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: '#bush-quote-outer',
+                start: `${i * 17}% top`,
+                toggleActions: 'play none none reverse',
+              }
+            }
+          );
+        });
       }
     }
+
+    // ── Section rule grow (IO) ────────────────────────────────────────
+    const ruleObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('rule-visible'); ruleObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.8 });
+    document.querySelectorAll('.section-rule').forEach(el => ruleObs.observe(el));
 
     // ── Reveal (IO fallback for browsers without CSS view-timeline) ───
     const revealObs = new IntersectionObserver(entries => {
@@ -907,19 +944,22 @@
       countObs.observe(countEl);
     }
 
-    // ── Mechanism step counter ────────────────────────────────────────
+    // ── Mechanism step counter + active step highlight ───────────────
     const mechanismNum = document.getElementById('mechanism-num');
-    if (mechanismNum) {
+    const allSteps = document.querySelectorAll('.mechanism-step');
+    if (mechanismNum && allSteps.length) {
       const stepObs = new IntersectionObserver(entries => {
         entries.forEach(e => {
           if (e.isIntersecting) {
             mechanismNum.textContent = e.target.dataset.step;
             mechanismNum.classList.add('active');
             setTimeout(() => mechanismNum.classList.remove('active'), 400);
+            allSteps.forEach(s => s.classList.remove('is-active-step'));
+            e.target.classList.add('is-active-step');
           }
         });
       }, { threshold: 0.5, rootMargin: '-25% 0px -25% 0px' });
-      document.querySelectorAll('.mechanism-step').forEach(el => stepObs.observe(el));
+      allSteps.forEach(el => stepObs.observe(el));
     }
   </script>
 </body>
