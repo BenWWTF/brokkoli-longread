@@ -87,9 +87,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
+      position: sticky;
+      top: 0;
       overflow: hidden;
       color: var(--white);
+      z-index: 5;
     }
 
     .hero-bg {
@@ -1182,43 +1184,36 @@
 
     timelineItems.forEach(item => timelineObserver.observe(item));
 
-    // Hero Immersive Zoom-Out Animation
+    // Hero Sticky Zoom-Out Animation
     const hero = document.getElementById('hero');
     const heroBg = document.getElementById('hero-bg');
     const heroWrapper = document.getElementById('hero-wrapper');
 
-    let heroScrollProgress = 0;
+    // Start with image zoomed in 1.8x
+    heroBg.style.transform = `scale(1.8)`;
+    heroWrapper.style.opacity = '1';
+
     window.addEventListener('scroll', () => {
-      const heroHeight = hero.offsetHeight;
       const scrollY = window.scrollY;
+      const heroHeight = hero.offsetHeight;
 
-      if (scrollY < heroHeight) {
-        heroScrollProgress = scrollY / (heroHeight * 0.6);
-        heroScrollProgress = Math.min(heroScrollProgress, 1);
+      // Calculate zoom progress: as you scroll through hero height, zoom from 1.8 to 1.0
+      let zoomProgress = Math.min(scrollY / heroHeight, 1);
 
-        // Debug log
-        if (scrollY > 50) console.log('Hero scroll progress:', heroScrollProgress.toFixed(2), 'scrollY:', scrollY, 'heroHeight:', heroHeight);
+      // Start at 1.8x, zoom out to 1.0x as you scroll
+      const bgScale = 1.8 - (zoomProgress * 0.8);
+      heroBg.style.transform = `scale(${bgScale})`;
 
-        // Immersive effects:
-        // 1. Background zooms out (expands as you scroll away)
-        const bgScale = 1 + (heroScrollProgress * 0.8);
-        heroBg.style.transform = `scale(${bgScale})`;
+      // Fade content as you scroll
+      const contentOpacity = Math.max(1 - (zoomProgress * 1.2), 0);
+      heroWrapper.style.opacity = contentOpacity;
 
-        // 2. Content zooms out dramatically + rises up + fades
-        const contentScale = 1 - (heroScrollProgress * 0.8);
-        const contentTranslateY = -heroScrollProgress * 300;
-        const contentOpacity = 1 - (heroScrollProgress * 0.8);
+      // Blur increases as you scroll
+      const blurAmount = zoomProgress * 12;
+      heroBg.style.filter = `blur(${blurAmount}px)`;
 
-        heroWrapper.style.transform = `scale(${contentScale}) translateY(${contentTranslateY}px)`;
-        heroWrapper.style.opacity = contentOpacity;
-
-        // 3. Blur effect increases as you scroll
-        const blurAmount = heroScrollProgress * 15;
-        heroBg.style.filter = `blur(${blurAmount}px)`;
-      }
-
-      // Hero done - show next section content
-      if (heroScrollProgress > 0.7) {
+      // Show next content when hero is mostly scrolled
+      if (zoomProgress > 0.6) {
         document.body.classList.add('hero-done');
       } else {
         document.body.classList.remove('hero-done');
