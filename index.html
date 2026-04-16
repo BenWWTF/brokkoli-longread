@@ -496,10 +496,8 @@
       .bush-quote-section { padding: clamp(4rem, 10vw, 6rem) 1.75rem; align-items: flex-start; }
       .bush-mark { font-size: clamp(4rem, 14vw, 7rem); }
 
-      /* Mid-zoom: no sticky, no full-bleed breakout */
-      .mid-zoom-container { height: auto; width: 100%; left: auto; margin-left: 0; }
-      .mid-zoom-section { position: relative; top: auto; height: auto; padding: 5rem 2rem; }
-      .mid-zoom-label { opacity: 1; transform: none; }
+      /* Mid-zoom: shorter scroll window on mobile — keep sticky + full-bleed */
+      .mid-zoom-container { height: 200vh; }
     }
 
     /* ─── Footer safe area ──────────────────────────────────────────── */
@@ -864,30 +862,24 @@
         onLeaveBack: () => document.getElementById('scroll-hint')?.classList.remove('hidden'),
       });
 
-      // ── Mid-Page Zoom: desktop only ──────────────────────────────────
-      if (!isMobile) {
-        gsap.fromTo('#mid-zoom-num',
-          { scale: 2.6 },
-          {
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: '#mid-zoom-container',
-              start: 'top top',
-              end: '65% bottom',
-              scrub: 1.5,
-              onUpdate: self => {
-                document.getElementById('mid-zoom-label')
-                  .classList.toggle('visible', self.progress >= 0.55);
-              }
+      // ── Mid-Page Zoom (desktop + mobile) ─────────────────────────────
+      gsap.fromTo('#mid-zoom-num',
+        { scale: 2.6 },
+        {
+          scale: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#mid-zoom-container',
+            start: 'top top',
+            end: '65% bottom',
+            scrub: 1.5,
+            onUpdate: self => {
+              document.getElementById('mid-zoom-label')
+                .classList.toggle('visible', self.progress >= 0.55);
             }
           }
-        );
-      } else {
-        // Mobile: static 88% — no zoom, no sticky (CSS handles layout)
-        gsap.set('#mid-zoom-num', { scale: 1 });
-        document.getElementById('mid-zoom-label')?.classList.add('visible');
-      }
+        }
+      );
     } else {
       // Reduced motion: show everything immediately
       gsap.set('#hero-content', { opacity: 1 });
