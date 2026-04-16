@@ -78,19 +78,16 @@
     }
 
     /* ─── Hero ──────────────────────────────────────────────────────── */
-    .hero-container { position: relative; height: 500vh; }
+    .hero-container { position: relative; height: 600vh; }
 
+    /* Background layer — image + overlay, sticky */
     .hero {
       position: sticky;
       top: 0;
       height: 100vh;
-      height: 100dvh; /* tracks visible viewport on iOS Safari */
+      height: 100dvh;
       background: var(--bg-dark);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
-      color: var(--white);
       padding-top: env(safe-area-inset-top);
     }
 
@@ -100,7 +97,6 @@
       object-fit: cover;
       z-index: 0;
       transform-origin: center center;
-      /* will-change: added on desktop only — see media query */
     }
 
     .hero-overlay {
@@ -109,13 +105,24 @@
       z-index: 1;
     }
 
+    /* Headline layer — independently sticky, overlays the background layer.
+       margin-top: -100dvh pulls it back to sit on top of .hero.
+       z-index: 20 keeps it above the image + overlay.
+       pointer-events: none so the background scroll still works. */
     .hero-content {
-      position: relative;
-      z-index: 2;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100dvh;
+      margin-top: -100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      max-width: 860px;
       padding: 0 2rem;
-      opacity: 0; /* GSAP animates this in on scroll */
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0; /* GSAP animates this in */
     }
 
     .hero-content h1 {
@@ -123,8 +130,9 @@
       font-size: clamp(2.8rem, 10vw, 5.5rem);
       font-weight: 700;
       line-height: 1.1;
-      margin-bottom: 1.5rem;
+      max-width: 860px;
       letter-spacing: -0.02em;
+      color: var(--white); /* GSAP scrubs to #1A1A1A */
     }
 
     .hero-content .subtitle {
@@ -479,10 +487,19 @@
       .chart-country { flex: 0 0 72px; }
       .bush-line { font-size: clamp(1.5rem, 6vw, 2rem); }
 
-      /* Hero: collapse to single viewport height, no scroll-jacking */
-      .hero-container { height: 100dvh; }
+      /* Hero: collapse to single viewport height, no scroll-jacking.
+         hero-content is now a DOM sibling of .hero, so on mobile we
+         pull it back over the photo with negative margin + relative pos. */
+      .hero-container { height: 100dvh; position: relative; }
       .hero { position: relative; top: auto; }
-      .hero-content { opacity: 1 !important; } /* GSAP not active on mobile */
+      .hero-content {
+        position: absolute;    /* overlay the static hero photo */
+        top: 0; left: 0; right: 0; bottom: 0;
+        margin-top: 0;
+        height: auto;
+        pointer-events: none;
+        opacity: 1 !important;
+      }
       .hero-image { will-change: auto; transform: none !important; }
 
       /* Bush quote: shorter sticky container on mobile (280vh vs 420vh desktop) */
@@ -515,17 +532,19 @@
 
   <!-- ── Hero ──────────────────────────────────────────────────────── -->
   <div class="hero-container" id="hero-container">
+    <!-- Background layer: image + overlay, sticky, background-color transitions via GSAP -->
     <section class="hero" id="hero">
       <img id="hero-image" src="./broccoli-hero.jpg" alt="Fresh broccoli florets" class="hero-image">
       <div class="hero-overlay"></div>
-      <div class="hero-content" id="hero-content">
-        <h1>Broccoli is technically a flower.</h1>
-      </div>
       <div class="hero-scroll-hint" id="scroll-hint">
         <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
         <span>Scroll</span>
       </div>
     </section>
+    <!-- Headline layer: independently sticky — stays centred while background changes -->
+    <div class="hero-content" id="hero-content">
+      <h1>Broccoli is technically a flower.</h1>
+    </div>
   </div>
 
   <!-- ── Health ─────────────────────────────────────────────────────── -->
@@ -819,25 +838,25 @@
         }
       );
 
-      // Phase 2 (50→62%): headline reveals as white text over settled photo
+      // Phase 2 (52→62%): headline reveals — white text over settled photo
+      // Container is 600vh; unpin = 600−100 = 500vh (≈ 83.3%)
       gsap.fromTo('#hero-content',
         { opacity: 0 },
         {
           opacity: 1, ease: 'none',
           scrollTrigger: {
             trigger: '#hero-container',
-            start: '50% top',  // 250vh
-            end: '62% top',    // 310vh — fully revealed before transition starts
+            start: '52% top',  // 312vh
+            end: '62% top',    // 372vh
             scrub: 1,
           }
         }
       );
 
-      // Phase 3 (65→78%): photo fades out, bg brightens to white,
-      // headline colour scrubs white → near-black simultaneously.
-      // Must complete before 80% (=400vh = unpin point for 500vh container).
-      const transStart = '65% top';  // 325vh — short dwell after text reveal
-      const transEnd   = '78% top';  // 390vh — 10vh of black-on-white while still pinned
+      // Phase 3 (65→75%): photo fades, bg → white, headline white → black.
+      // Ends at 450vh — leaving 50vh of black-on-white dwell before 500vh unpin.
+      const transStart = '65% top';  // 390vh
+      const transEnd   = '75% top';  // 450vh → 50vh dwell until unpin at 500vh
       const transOpts  = { trigger: '#hero-container', start: transStart, end: transEnd, scrub: 1 };
 
       gsap.to('#hero-image',
