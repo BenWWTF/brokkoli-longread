@@ -819,24 +819,25 @@
         }
       );
 
-      // Phase 2 (52→65%): headline reveals as white text over settled photo
+      // Phase 2 (50→62%): headline reveals as white text over settled photo
       gsap.fromTo('#hero-content',
         { opacity: 0 },
         {
           opacity: 1, ease: 'none',
           scrollTrigger: {
             trigger: '#hero-container',
-            start: '52% top',
-            end: '65% top',
+            start: '50% top',  // 250vh
+            end: '62% top',    // 310vh — fully revealed before transition starts
             scrub: 1,
           }
         }
       );
 
-      // Phase 3 (75→94%): photo fades out, bg brightens to white,
-      // headline colour scrubs white → near-black simultaneously
-      const transStart = '75% top';
-      const transEnd   = '94% top';
+      // Phase 3 (65→78%): photo fades out, bg brightens to white,
+      // headline colour scrubs white → near-black simultaneously.
+      // Must complete before 80% (=400vh = unpin point for 500vh container).
+      const transStart = '65% top';  // 325vh — short dwell after text reveal
+      const transEnd   = '78% top';  // 390vh — 10vh of black-on-white while still pinned
       const transOpts  = { trigger: '#hero-container', start: transStart, end: transEnd, scrub: 1 };
 
       gsap.to('#hero-image',
