@@ -297,15 +297,59 @@
     .mechanism-step h4 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.6rem; line-height: 1.3; }
     .mechanism-step p  { font-size: 1rem; color: var(--text-secondary); margin: 0; line-height: 1.65; }
 
-    /* ─── Cooking Chart ─────────────────────────────────────────────── */
-    .cooking-chart { margin: 2.5rem 0; }
-    .cooking-method { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--rule); }
-    .cooking-method:first-child { border-top: 1px solid var(--rule); }
-    .cooking-label { flex: 0 0 140px; font-family: var(--font-sans); font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); }
-    .cooking-bar   { flex: 1; height: 6px; background: rgba(26,26,26,0.07); border-radius: 3px; overflow: hidden; }
-    .cooking-fill  { height: 100%; background: var(--green-accent); border-radius: 3px; width: 0%; opacity: 0; transition: width 1s var(--ease) 0.15s, opacity 0.3s var(--ease) 0.15s; }
-    .cooking-method.is-visible .cooking-fill { opacity: 1; width: var(--w, 0%); }
-    .cooking-pct   { flex: 0 0 40px; font-family: var(--font-sans); font-size: 0.82rem; font-weight: 700; color: var(--green-accent); text-align: right; }
+    /* ─── Cooking Scrolly (D3 sticky + step cards) ─────────────────── */
+    .cooking-scrolly-outer { margin-top: 2.5rem; }
+    .cooking-scrolly {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+      padding: 0 clamp(1.5rem, 5vw, 3rem);
+    }
+    .cooking-chart-col {
+      position: sticky;
+      top: 15dvh;
+    }
+    #cooking-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+    .cooking-steps { padding-top: 15vh; padding-bottom: 20vh; }
+    .cooking-step  { min-height: 55vh; display: flex; align-items: center; }
+    .cooking-step-card {
+      padding: 1.75rem;
+      border-left: 2px solid var(--rule);
+      opacity: 0.3;
+      transition: opacity 0.45s var(--ease), border-color 0.45s var(--ease);
+    }
+    .cooking-step-card.is-active       { opacity: 1; border-color: var(--green-accent); }
+    .cooking-step-card.is-active.is-amber { border-color: var(--amber); }
+    .cooking-step-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-secondary); margin-bottom: 0.5rem; display: block;
+    }
+    .cooking-step-pct {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      font-weight: 700; color: var(--green-accent);
+      line-height: 1; display: block; margin-bottom: 0.65rem;
+    }
+    .cooking-step-pct.amber { color: var(--amber); }
+    .cooking-step-card h4 {
+      font-family: var(--font-display);
+      font-size: 1.15rem; font-weight: 700;
+      margin-bottom: 0.5rem; line-height: 1.3;
+    }
+    .cooking-step-card p {
+      font-size: 0.93rem; color: var(--text-secondary);
+      line-height: 1.65; margin: 0;
+    }
 
     /* ─── Timeline ──────────────────────────────────────────────────── */
     .timeline { margin: 2.5rem 0; }
@@ -483,7 +527,6 @@
       .stat-item:last-child { border-bottom: none; }
       .hero-scroll-hint { display: none; }
       .closing p { text-align: center; }
-      .cooking-label { flex: 0 0 100px; }
       .chart-country { flex: 0 0 72px; }
       .bush-line { font-size: clamp(1.5rem, 6vw, 2rem); }
 
@@ -498,6 +541,13 @@
 
       /* Mid-zoom: shorter scroll window on mobile — keep sticky + full-bleed */
       .mid-zoom-container { height: 200vh; }
+
+      /* Cooking scrolly: disable sticky on mobile, stack vertically */
+      .cooking-scrolly { grid-template-columns: 1fr; gap: 0; }
+      .cooking-chart-col { position: relative; top: auto; min-height: 220px; margin-bottom: 1.5rem; }
+      .cooking-steps { padding-top: 0; padding-bottom: 0; }
+      .cooking-step  { min-height: auto; padding: 0.25rem 0; }
+      .cooking-step-card { opacity: 1; margin-bottom: 1.25rem; }
     }
 
     /* ─── Footer safe area ──────────────────────────────────────────── */
@@ -583,31 +633,56 @@
       <h3>Cooking method matters</h3>
       <p>Sulforaphane retention relative to raw:</p>
 
-      <div class="cooking-chart">
-        <div class="cooking-method">
-          <span class="cooking-label">Raw</span>
-          <div class="cooking-bar"><div class="cooking-fill" style="--w:100%"></div></div>
-          <span class="cooking-pct">100%</span>
+    </div><!-- /.container — break out for wider sticky layout -->
+
+    <!-- D3 Sticky Cooking Chart -->
+    <div class="cooking-scrolly-outer">
+      <div class="cooking-scrolly" id="cooking-scrolly">
+        <div class="cooking-chart-col" id="cooking-chart-col">
+          <svg id="cooking-svg" viewBox="0 0 400 270"
+               aria-label="Sulforaphane retention by cooking method"></svg>
         </div>
-        <div class="cooking-method">
-          <span class="cooking-label">Steamed (3–5 min)</span>
-          <div class="cooking-bar"><div class="cooking-fill" style="--w:85%"></div></div>
-          <span class="cooking-pct">85%</span>
-        </div>
-        <div class="cooking-method">
-          <span class="cooking-label">Microwaved</span>
-          <div class="cooking-bar"><div class="cooking-fill" style="--w:75%"></div></div>
-          <span class="cooking-pct">75%</span>
-        </div>
-        <div class="cooking-method">
-          <span class="cooking-label">Stir-fried</span>
-          <div class="cooking-bar"><div class="cooking-fill" style="--w:65%"></div></div>
-          <span class="cooking-pct">65%</span>
-        </div>
-        <div class="cooking-method">
-          <span class="cooking-label">Boiled</span>
-          <div class="cooking-bar"><div class="cooking-fill" style="--w:30%"></div></div>
-          <span class="cooking-pct">30%</span>
+        <div class="cooking-steps" id="cooking-steps">
+          <div class="cooking-step" data-index="0">
+            <div class="cooking-step-card" data-color="green">
+              <span class="cooking-step-eyebrow">Raw</span>
+              <span class="cooking-step-pct">100%</span>
+              <h4>The baseline</h4>
+              <p>Raw broccoli retains all available glucosinolates and active myrosinase. Chewing triggers the reaction immediately — sulforaphane forms on contact.</p>
+            </div>
+          </div>
+          <div class="cooking-step" data-index="1">
+            <div class="cooking-step-card" data-color="green">
+              <span class="cooking-step-eyebrow">Steamed 3–5 min</span>
+              <span class="cooking-step-pct">85%</span>
+              <h4>The gold standard</h4>
+              <p>Light steaming softens cell walls without destroying myrosinase. The 40-minute pre-chop rule applies: let the enzyme do its work, then apply gentle heat.</p>
+            </div>
+          </div>
+          <div class="cooking-step" data-index="2">
+            <div class="cooking-step-card" data-color="green">
+              <span class="cooking-step-eyebrow">Microwaved</span>
+              <span class="cooking-step-pct">75%</span>
+              <h4>Surprisingly effective</h4>
+              <p>Brief microwaving is more heat-controlled than boiling. Short bursts preserve more nutrients than most people expect — especially compared to the pot.</p>
+            </div>
+          </div>
+          <div class="cooking-step" data-index="3">
+            <div class="cooking-step-card" data-color="green">
+              <span class="cooking-step-eyebrow">Stir-fried</span>
+              <span class="cooking-step-pct">65%</span>
+              <h4>Speed helps</h4>
+              <p>High heat, short time. The wok sear deactivates some enzymes — but brevity limits nutrient leaching. The default method across East Asia, and not as damaging as it seems.</p>
+            </div>
+          </div>
+          <div class="cooking-step" data-index="4">
+            <div class="cooking-step-card" data-color="amber">
+              <span class="cooking-step-eyebrow">Boiled</span>
+              <span class="cooking-step-pct amber">30%</span>
+              <h4>The worst offender</h4>
+              <p>Glucosinolates leach into the water. Myrosinase is destroyed early. The grey-green mush that generations of children associate with dinner? This is where broccoli got its reputation.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -800,6 +875,10 @@
     <p><a href="https://github.com/BenWWTF/brokkoli-longread">Source on GitHub ↗</a></p>
   </footer>
 
+  <!-- ── D3 v7 + Scrollama v3 (cooking chart) ────────────────────── -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/scrollama@3/build/scrollama.min.js"></script>
+
   <!-- ── GSAP + ScrollTrigger (Layer 2: cinematic scrub with lag) ───── -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -977,7 +1056,7 @@
         }
       });
     }, { threshold: isMobile ? 0.1 : 0.2, rootMargin: isMobile ? '0px' : '0px 0px -20px 0px' });
-    document.querySelectorAll('.chart-bar, .cooking-method').forEach(el => chartObs.observe(el));
+    document.querySelectorAll('.chart-bar').forEach(el => chartObs.observe(el));
 
     // ── Count-up ──────────────────────────────────────────────────────
     const countEl = document.getElementById('count-up');
@@ -1021,6 +1100,186 @@
     }, { threshold: 0.1, rootMargin: isMobile ? '-20% 0px -20% 0px' : '-38% 0px -52% 0px' });
       allSteps.forEach(el => stepObs.observe(el));
     }
+  </script>
+
+  <!-- ── D3 Cooking Chart ──────────────────────────────────────── -->
+  <script>
+  (function initCookingChart() {
+    const methods = [
+      { label: 'Raw',          pct: 100, color: 'green' },
+      { label: 'Steamed 3–5m',pct: 85,  color: 'green' },
+      { label: 'Microwaved',  pct: 75,  color: 'green' },
+      { label: 'Stir-fried',  pct: 65,  color: 'green' },
+      { label: 'Boiled',      pct: 30,  color: 'amber' },
+    ];
+
+    const GREEN       = '#3D7A3C';
+    const GREEN_MUTED = '#A8D5A2';
+    const AMBER       = '#C17F24';
+    const GRAY        = 'rgba(26,26,26,0.07)';
+
+    const VB_W = 400, VB_H = 270;
+    const m = { top: 24, right: 54, bottom: 24, left: 112 };
+    const W = VB_W - m.left - m.right;   // 234
+    const H = VB_H - m.top  - m.bottom;  // 222
+
+    const svg = d3.select('#cooking-svg')
+      .append('g')
+      .attr('transform', `translate(${m.left},${m.top})`);
+
+    const y = d3.scaleBand()
+      .domain(methods.map(d => d.label))
+      .range([0, H])
+      .padding(0.4);
+
+    const x = d3.scaleLinear().domain([0, 100]).range([0, W]);
+
+    // Subtle dashed grid
+    svg.append('g')
+      .selectAll('line')
+      .data([25, 50, 75, 100])
+      .join('line')
+        .attr('x1', d => x(d)).attr('x2', d => x(d))
+        .attr('y1', 0).attr('y2', H)
+        .attr('stroke', 'rgba(26,26,26,0.07)')
+        .attr('stroke-dasharray', '3,3');
+
+    // X axis labels
+    svg.append('g')
+      .attr('transform', `translate(0,${H + 10})`)
+      .selectAll('text')
+      .data([0, 25, 50, 75, 100])
+      .join('text')
+        .attr('x', d => x(d))
+        .attr('text-anchor', d => d === 0 ? 'start' : d === 100 ? 'end' : 'middle')
+        .attr('font-family', 'Source Sans Pro, sans-serif')
+        .attr('font-size', 10)
+        .attr('fill', 'rgba(26,26,26,0.3)')
+        .text(d => d + '%');
+
+    // Y axis method labels
+    const yLabels = svg.append('g')
+      .selectAll('text')
+      .data(methods)
+      .join('text')
+        .attr('x', -10)
+        .attr('y', d => y(d.label) + y.bandwidth() / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'end')
+        .attr('font-family', 'Source Sans Pro, sans-serif')
+        .attr('font-size', 12)
+        .attr('font-weight', 600)
+        .attr('fill', 'rgba(26,26,26,0.25)')
+        .text(d => d.label);
+
+    // Bar background tracks
+    svg.append('g')
+      .selectAll('rect')
+      .data(methods)
+      .join('rect')
+        .attr('x', 0).attr('y', d => y(d.label))
+        .attr('width', W).attr('height', y.bandwidth())
+        .attr('rx', 3).attr('fill', GRAY);
+
+    // Active bars (start at 0)
+    const bars = svg.append('g')
+      .selectAll('rect')
+      .data(methods)
+      .join('rect')
+        .attr('x', 0).attr('y', d => y(d.label))
+        .attr('height', y.bandwidth())
+        .attr('width', 0)
+        .attr('rx', 3)
+        .attr('fill', GRAY);
+
+    // Value labels
+    const valLabels = svg.append('g')
+      .selectAll('text')
+      .data(methods)
+      .join('text')
+        .attr('x', 4)
+        .attr('y', d => y(d.label) + y.bandwidth() / 2)
+        .attr('dy', '0.35em')
+        .attr('font-family', 'Playfair Display, serif')
+        .attr('font-size', 12)
+        .attr('font-weight', 700)
+        .attr('fill', 'rgba(0,0,0,0)')
+        .text(d => d.pct + '%');
+
+    let current = -2; // sentinel so first call always runs
+
+    function updateChart(activeIndex, animate) {
+      if (activeIndex === current) return;
+      current = activeIndex;
+      const dur = animate ? 550 : 0;
+      const idx = activeIndex;
+
+      bars.transition().duration(dur).ease(d3.easeQuadOut)
+        .attr('fill', (d, i) => {
+          if (idx < 0 || i > idx) return GRAY;
+          if (i === idx) return d.color === 'amber' ? AMBER : GREEN;
+          return GREEN_MUTED;
+        })
+        .attr('width', (d, i) => (idx >= 0 && i <= idx) ? x(d.pct) : 0);
+
+      valLabels.transition().duration(dur).ease(d3.easeQuadOut)
+        .attr('x', (d, i) => (idx >= 0 && i <= idx) ? x(d.pct) + 6 : 4)
+        .attr('fill', (d, i) => {
+          if (idx < 0 || i > idx) return 'rgba(0,0,0,0)';
+          if (i === idx) return d.color === 'amber' ? AMBER : GREEN;
+          return 'rgba(168,213,162,0.85)';
+        });
+
+      yLabels.transition().duration(dur)
+        .attr('fill', (d, i) => {
+          if (i === idx) return '#1A1A1A';
+          if (idx >= 0 && i < idx) return 'rgba(26,26,26,0.5)';
+          return 'rgba(26,26,26,0.25)';
+        });
+
+      document.querySelectorAll('.cooking-step-card').forEach((card, i) => {
+        const active = i === idx;
+        card.classList.toggle('is-active', active);
+        if (active && card.dataset.color === 'amber') {
+          card.classList.add('is-amber');
+        } else if (!active) {
+          card.classList.remove('is-amber');
+        }
+      });
+    }
+
+    // Reduced motion: show all bars immediately
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      updateChart(methods.length - 1, false);
+      return;
+    }
+
+    const isMob = window.innerWidth < 768;
+
+    if (isMob) {
+      // Mobile: IO-based (sticky disabled, vertical layout)
+      const mobObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            updateChart(parseInt(e.target.dataset.index, 10), true);
+          }
+        });
+      }, { threshold: 0.55 });
+      document.querySelectorAll('.cooking-step').forEach(el => mobObs.observe(el));
+      return;
+    }
+
+    // Desktop: Scrollama sticky
+    const scroller = scrollama();
+    scroller
+      .setup({ step: '#cooking-steps .cooking-step', offset: 0.55 })
+      .onStepEnter(({ index }) => updateChart(index, true))
+      .onStepExit(({ index, direction }) => {
+        if (direction === 'up') updateChart(index - 1, true);
+      });
+
+    window.addEventListener('resize', scroller.resize);
+  })();
   </script>
 </body>
 </html>
