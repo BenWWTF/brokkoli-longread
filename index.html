@@ -597,13 +597,201 @@
       /* Mid-zoom: shorter scroll window on mobile — keep sticky + full-bleed */
       .mid-zoom-container { height: 200vh; }
 
+      /* Chemical reaction: stack vertically on mobile */
+      .chem-panels { flex-direction: column; align-items: stretch; }
+      .chem-panel, .chem-panel.is-product { max-width: none; }
+      .chem-operator, .chem-arrow-wrap { align-self: center; }
+
       /* Cooking scrolly: disable sticky on mobile, stack vertically */
       .cooking-scrolly { grid-template-columns: 1fr; gap: 0; }
       .cooking-chart-col { position: relative; top: auto; min-height: 220px; margin-bottom: 1.5rem; }
       .cooking-steps { padding-top: 0; padding-bottom: 0; }
-      .cooking-step  { min-height: auto; padding: 0.25rem 0; }
+      .cooking-step  { min-height: 44vh; padding: 0.25rem 0; }
       .cooking-step-card { opacity: 1; margin-bottom: 1.25rem; }
     }
+
+    /* ─── Chemical Reaction Scheme ─────────────────────────────────── */
+    .chem-reaction {
+      margin: 2.5rem 0;
+      background: rgba(61,122,60,0.04);
+      border: 1px solid rgba(61,122,60,0.12);
+      border-radius: 8px;
+      padding: 2rem 1.5rem 1.75rem;
+    }
+    .chem-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--green-accent);
+      margin: 0 0 1.5rem;
+    }
+    .chem-panels {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .chem-panel {
+      flex: 1;
+      min-width: 130px;
+      max-width: 220px;
+      text-align: center;
+    }
+    .chem-panel.is-product { flex: 1.4; max-width: 280px; }
+    .chem-svg-wrap {
+      background: #fff;
+      border-radius: 6px;
+      padding: 1rem 0.75rem;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .chem-svg { width: 100%; height: auto; display: block; overflow: visible; }
+    .chem-name {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0.6rem 0 0.15rem;
+    }
+    .chem-formula {
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+      font-family: 'Courier New', monospace;
+      margin: 0 0 0.3rem;
+    }
+    .chem-desc {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+    .chem-operator {
+      font-size: 1.6rem;
+      color: rgba(26,26,26,0.18);
+      flex-shrink: 0;
+      user-select: none;
+      align-self: center;
+    }
+    .chem-arrow-wrap {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      align-self: center;
+    }
+    .chem-arrow-label {
+      font-family: var(--font-sans);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .chem-arrow-sym {
+      font-size: 1.4rem;
+      line-height: 1;
+      color: var(--green-accent);
+    }
+
+    /* ─── Timeline Modal ─────────────────────────────────────────────── */
+    .timeline-item { cursor: pointer; }
+    .timeline-item:hover { background: rgba(193,127,36,0.04); }
+    .timeline-read-more {
+      display: inline-block;
+      font-family: var(--font-sans);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-top: 0.4rem;
+    }
+    .tl-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,26,8,0.72);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s var(--ease);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .tl-modal-overlay.is-open { opacity: 1; pointer-events: all; }
+    .tl-modal {
+      background: #fff;
+      border-radius: 10px;
+      max-width: 480px;
+      width: 100%;
+      padding: 2rem;
+      position: relative;
+      transform: translateY(14px);
+      transition: transform 0.3s var(--ease);
+      max-height: 85dvh;
+      overflow-y: auto;
+    }
+    .tl-modal-overlay.is-open .tl-modal { transform: translateY(0); }
+    .tl-modal-close {
+      position: absolute;
+      top: 0.9rem; right: 0.9rem;
+      background: none; border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      line-height: 1;
+      min-width: 44px; min-height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      touch-action: manipulation;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+    .tl-modal-close:hover { background: rgba(26,26,26,0.06); }
+    .tl-modal-year {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--amber);
+      margin: 0 0 0.35rem;
+    }
+    .tl-modal-title {
+      font-family: var(--font-sans);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 1rem;
+      padding-right: 2.5rem;
+      line-height: 1.35;
+    }
+    .tl-modal-body {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin: 0 0 1.25rem;
+    }
+    .tl-modal-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--green-accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(61,122,60,0.3);
+      padding-bottom: 0.1rem;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tl-modal-link:hover { color: var(--amber); border-color: var(--amber); }
 
     /* ─── Footer safe area ──────────────────────────────────────────── */
     footer { padding-bottom: max(2.5rem, env(safe-area-inset-bottom)); }
@@ -616,6 +804,7 @@
       .mid-zoom-label { opacity: 1; transform: none; }
       .bush-line, .bush-cite { opacity: 1; transform: none; }
       .kitchen-step { opacity: 1; transform: none; }
+      .chem-reaction { opacity: 1; transform: none; }
       .hero-content { opacity: 1 !important; }
     }
   </style>
@@ -646,6 +835,125 @@
       <p>
         The most powerful compound in broccoli is sulforaphane. But sulforaphane doesn't exist in raw broccoli. The plant stores two separate chemicals in different cellular compartments — glucoraphanin and the enzyme myrosinase — deliberately apart. Only when you bite down, or run a knife through a floret, do the compartments rupture. The compounds mix. A chemical reaction fires. Broccoli synthesizes its own medicine in the moment of being eaten.
       </p>
+
+      <!-- ── Chemical Reaction Scheme ─────────────────────────────── -->
+      <div class="chem-reaction reveal">
+        <p class="chem-eyebrow">Three molecules &mdash; one reaction</p>
+        <div class="chem-panels">
+
+          <!-- Glucoraphanin -->
+          <div class="chem-panel">
+            <div class="chem-svg-wrap">
+              <svg class="chem-svg" viewBox="0 0 200 145" aria-label="Glucoraphanin structural formula">
+                <!-- Glucose ring (Haworth-style hexagon) -->
+                <!-- Ring: C1(right)=148,72, C2=131,103, C3=97,103, C4=80,72, C5=97,41, O-ring=131,41 -->
+                <polygon points="148,72 131,103 97,103 80,72 97,41 131,41"
+                         fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linejoin="round"/>
+                <!-- Ring O label -->
+                <text x="135" y="37" font-family="'Source Sans Pro',sans-serif" font-size="10" fill="#c94f3d" font-weight="600">O</text>
+                <!-- C2-OH (down from lower-right vertex) -->
+                <line x1="131" y1="103" x2="131" y2="120" stroke="#1a1a1a" stroke-width="1.3" stroke-linecap="round"/>
+                <text x="125" y="131" font-family="'Source Sans Pro',sans-serif" font-size="9.5" fill="#2e6da4">OH</text>
+                <!-- C3-OH (down from lower-left vertex) -->
+                <line x1="97" y1="103" x2="97" y2="120" stroke="#1a1a1a" stroke-width="1.3" stroke-linecap="round"/>
+                <text x="91" y="131" font-family="'Source Sans Pro',sans-serif" font-size="9.5" fill="#2e6da4">OH</text>
+                <!-- C4-HO (left from left vertex) -->
+                <line x1="80" y1="72" x2="62" y2="72" stroke="#1a1a1a" stroke-width="1.3" stroke-linecap="round"/>
+                <text x="41" y="76" font-family="'Source Sans Pro',sans-serif" font-size="9.5" fill="#2e6da4">HO</text>
+                <!-- C5-CH₂OH (up from upper-left vertex) -->
+                <line x1="97" y1="41" x2="97" y2="23" stroke="#1a1a1a" stroke-width="1.3" stroke-linecap="round"/>
+                <text x="75" y="17" font-family="'Source Sans Pro',sans-serif" font-size="8.5" fill="#1a1a1a">CH₂OH</text>
+                <!-- C1-S bond (S-glycoside going right from right vertex) -->
+                <line x1="148" y1="72" x2="168" y2="72" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+                <text x="168" y="77" font-family="'Source Sans Pro',sans-serif" font-size="10" fill="#c17f24" font-weight="600">S</text>
+                <!-- S-C bond going right -->
+                <line x1="177" y1="72" x2="192" y2="72" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- abbreviated side chain indicator -->
+                <text x="184" y="68" font-family="'Source Sans Pro',sans-serif" font-size="7.5" fill="#3d7a3c">···</text>
+              </svg>
+            </div>
+            <p class="chem-name">Glucoraphanin</p>
+            <p class="chem-formula">C₁₂H₂₃NO₁₀S₃</p>
+            <p class="chem-desc">Compartment 1 — inert until cell rupture</p>
+          </div>
+
+          <div class="chem-operator">+</div>
+
+          <!-- Myrosinase -->
+          <div class="chem-panel">
+            <div class="chem-svg-wrap">
+              <svg class="chem-svg" viewBox="0 0 160 130" aria-label="Myrosinase enzyme schematic">
+                <!-- Protein body (simplified blob) -->
+                <ellipse cx="80" cy="65" rx="60" ry="48" fill="rgba(193,127,36,0.08)" stroke="#c17f24" stroke-width="1.5"/>
+                <!-- Active site pocket (notch) -->
+                <path d="M 80,20 C 88,20 94,26 94,34 C 94,42 88,46 80,46 C 72,46 66,42 66,34 C 66,26 72,20 80,20 Z"
+                      fill="rgba(193,127,36,0.15)" stroke="#c17f24" stroke-width="1.2"/>
+                <!-- α-helix ribbons (schematic) -->
+                <path d="M 44,58 Q 52,52 60,58 Q 68,64 76,58" fill="none" stroke="#c17f24" stroke-width="2" stroke-linecap="round"/>
+                <path d="M 84,72 Q 92,66 100,72 Q 108,78 116,72" fill="none" stroke="#c17f24" stroke-width="2" stroke-linecap="round"/>
+                <!-- β-strand arrows -->
+                <line x1="46" y1="82" x2="70" y2="82" stroke="#c17f24" stroke-width="1.8" stroke-linecap="round"/>
+                <polygon points="70,78 78,82 70,86" fill="#c17f24"/>
+                <line x1="90" y1="90" x2="114" y2="90" stroke="#c17f24" stroke-width="1.8" stroke-linecap="round"/>
+                <polygon points="114,86 122,90 114,94" fill="#c17f24"/>
+                <!-- Active site label -->
+                <text x="80" y="38" font-family="'Source Sans Pro',sans-serif" font-size="7" fill="#c17f24" font-weight="700" text-anchor="middle">active site</text>
+              </svg>
+            </div>
+            <p class="chem-name">Myrosinase</p>
+            <p class="chem-formula">β-thioglucosidase</p>
+            <p class="chem-desc">Compartment 2 — heat-sensitive enzyme</p>
+          </div>
+
+          <div class="chem-arrow-wrap">
+            <span class="chem-arrow-label">cell damage</span>
+            <span class="chem-arrow-sym">&#10230;</span>
+          </div>
+
+          <!-- Sulforaphane (product) -->
+          <div class="chem-panel is-product">
+            <div class="chem-svg-wrap">
+              <svg class="chem-svg" viewBox="0 0 248 95" aria-label="Sulforaphane structural formula: CH₃-S(=O)-(CH₂)₄-N=C=S">
+                <style>.c-at{font:600 11px/1 'Source Sans Pro',sans-serif}.c-bl{stroke:#1a1a1a;stroke-width:1.5;stroke-linecap:round;fill:none}</style>
+                <!-- CH₃ -->
+                <text class="c-at" x="2" y="59" fill="#1a1a1a">CH₃</text>
+                <!-- CH₃–S bond -->
+                <line class="c-bl" x1="30" y1="54" x2="53" y2="54"/>
+                <!-- S (sulfoxide) -->
+                <text class="c-at" x="53" y="59" fill="#c17f24" font-weight="700">S</text>
+                <!-- S=O double bond (vertical up) -->
+                <line class="c-bl" x1="57" y1="49" x2="57" y2="29"/>
+                <line class="c-bl" x1="62" y1="49" x2="62" y2="29"/>
+                <!-- O -->
+                <text class="c-at" x="54" y="24" fill="#c94f3d">O</text>
+                <!-- S to chain (down-right angle) -->
+                <line class="c-bl" x1="68" y1="54" x2="86" y2="65"/>
+                <!-- 4-carbon zigzag: (CH₂)₄ -->
+                <line class="c-bl" x1="86" y1="65" x2="104" y2="54"/>
+                <line class="c-bl" x1="104" y1="54" x2="122" y2="65"/>
+                <line class="c-bl" x1="122" y1="65" x2="140" y2="54"/>
+                <line class="c-bl" x1="140" y1="54" x2="158" y2="65"/>
+                <!-- N (isothiocyanate nitrogen) -->
+                <text class="c-at" x="158" y="70" fill="#2e6da4" font-weight="700">N</text>
+                <!-- N=C double bond -->
+                <line class="c-bl" x1="167" y1="62" x2="191" y2="62"/>
+                <line class="c-bl" x1="167" y1="67" x2="191" y2="67"/>
+                <!-- C (central, cumulated) -->
+                <text class="c-at" x="192" y="70" fill="#1a1a1a">C</text>
+                <!-- C=S double bond -->
+                <line class="c-bl" x1="201" y1="62" x2="225" y2="62"/>
+                <line class="c-bl" x1="201" y1="67" x2="225" y2="67"/>
+                <!-- S (terminal) -->
+                <text class="c-at" x="226" y="70" fill="#c17f24" font-weight="700">S</text>
+              </svg>
+            </div>
+            <p class="chem-name">Sulforaphane</p>
+            <p class="chem-formula">C₆H₁₁NOS₂</p>
+            <p class="chem-desc">The bioactive compound — forms only on demand</p>
+          </div>
+
+        </div>
+      </div>
 
       <div class="mechanism-outer">
         <div class="mechanism-counter" aria-hidden="true">
@@ -871,46 +1179,52 @@
       <p class="lede reveal">From Roman antiquity to the United States Supreme Court, broccoli has accumulated a stranger history than almost any other vegetable.</p>
 
       <div class="timeline">
-        <div class="timeline-item">
+        <div class="timeline-item" data-modal="pliny" role="button" tabindex="0" aria-label="Read more about Pliny the Elder and broccoli">
           <div class="timeline-year">~79 CE</div>
           <div class="timeline-content">
             <h4>Pliny praises it</h4>
             <p>Roman naturalist Pliny the Elder calls broccoli "one of the most delicious vegetables" in <em>Naturalis Historia</em>.</p>
+            <span class="timeline-read-more">Read more ↗</span>
           </div>
         </div>
-        <div class="timeline-item">
+        <div class="timeline-item" data-modal="catherine" role="button" tabindex="0" aria-label="Read more about Catherine de Medici">
           <div class="timeline-year">1533</div>
           <div class="timeline-content">
             <h4>Catherine de Medici</h4>
             <p>Italian seeds arrive in France with the Medici court. French nobility calls it "Italian asparagus" — a name that didn't stick.</p>
+            <span class="timeline-read-more">Read more ↗</span>
           </div>
         </div>
-        <div class="timeline-item">
+        <div class="timeline-item" data-modal="darrigo" role="button" tabindex="0" aria-label="Read more about the D'Arrigo brothers">
           <div class="timeline-year">1922</div>
           <div class="timeline-content">
             <h4>The D'Arrigo brothers</h4>
             <p>Sicilian immigrants Stephano and Andrea begin commercial cultivation in California. Their "Andy Boy" brand is still on shelves today.</p>
+            <span class="timeline-read-more">Read more ↗</span>
           </div>
         </div>
-        <div class="timeline-item">
+        <div class="timeline-item" data-modal="bush" role="button" tabindex="0" aria-label="Read more about President Bush and broccoli">
           <div class="timeline-year">1990</div>
           <div class="timeline-content">
             <h4>George H.W. Bush's war</h4>
             <p>President Bush bans broccoli from Air Force One. Growers ship 10 tons to the White House in protest.</p>
+            <span class="timeline-read-more">Read more ↗</span>
           </div>
         </div>
-        <div class="timeline-item">
+        <div class="timeline-item" data-modal="scalia" role="button" tabindex="0" aria-label="Read more about Justice Scalia's broccoli problem">
           <div class="timeline-year">2012</div>
           <div class="timeline-content">
             <h4>The broccoli problem</h4>
             <p>Justice Scalia raises broccoli in ACA Supreme Court arguments. A vegetable becomes shorthand for the limits of government power.</p>
+            <span class="timeline-read-more">Read more ↗</span>
           </div>
         </div>
-        <div class="timeline-item">
+        <div class="timeline-item" data-modal="tree" role="button" tabindex="0" aria-label="Read more about the broccoli tree">
           <div class="timeline-year">2016</div>
           <div class="timeline-content">
             <h4>The broccoli tree</h4>
             <p>A lone tree in Aberfeldy, Scotland — shaped exactly like a broccoli floret — becomes a global internet sensation.</p>
+            <span class="timeline-read-more">Read more ↗</span>
           </div>
         </div>
       </div>
@@ -1342,29 +1656,113 @@
 
     const isMob = window.innerWidth < 768;
 
-    if (isMob) {
-      // Mobile: IO-based (sticky disabled, vertical layout)
-      const mobObs = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            updateChart(parseInt(e.target.dataset.index, 10), true);
-          }
-        });
-      }, { threshold: 0.55 });
-      document.querySelectorAll('.cooking-step').forEach(el => mobObs.observe(el));
-      return;
-    }
-
-    // Desktop: Scrollama sticky
+    // Both mobile and desktop: Scrollama (line-based detection, not area-based)
     const scroller = scrollama();
     scroller
-      .setup({ step: '#cooking-steps .cooking-step', offset: 0.55 })
+      .setup({ step: '#cooking-steps .cooking-step', offset: isMob ? 0.75 : 0.55 })
       .onStepEnter(({ index }) => updateChart(index, true))
       .onStepExit(({ index, direction }) => {
         if (direction === 'up') updateChart(index - 1, true);
       });
 
     window.addEventListener('resize', scroller.resize);
+  })();
+  </script>
+
+  <!-- ── Timeline Modal Overlay ──────────────────────────────────── -->
+  <div class="tl-modal-overlay" id="tl-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tl-modal-title-el">
+    <div class="tl-modal" id="tl-modal">
+      <button class="tl-modal-close" id="tl-modal-close" aria-label="Close">&times;</button>
+      <p class="tl-modal-year" id="tl-modal-year-el"></p>
+      <h3 class="tl-modal-title" id="tl-modal-title-el"></h3>
+      <p class="tl-modal-body" id="tl-modal-body-el"></p>
+      <a class="tl-modal-link" id="tl-modal-link-el" target="_blank" rel="noopener noreferrer"></a>
+    </div>
+  </div>
+
+  <script>
+  // ── Timeline Modal ──────────────────────────────────────────────
+  (function() {
+    const MODAL_DATA = {
+      pliny: {
+        year: '~79 CE',
+        title: 'Pliny the Elder praises broccoli',
+        body: 'Roman naturalist Pliny the Elder documented broccoli in his encyclopedic work <em>Naturalis Historia</em>, describing the plant — which Romans called <em>cyma</em> — as one of the finest vegetables available. The Calabrian variety he knew had been cultivated in the Mediterranean for centuries before that. Broccoli remained a staple of Italian agriculture for nearly two millennia before spreading north to France and Britain.',
+        link: 'https://en.wikipedia.org/wiki/Pliny_the_Elder',
+        linkLabel: 'Pliny the Elder on Wikipedia ↗'
+      },
+      catherine: {
+        year: '1533',
+        title: 'Catherine de Medici brings Italian seeds to France',
+        body: 'When the fourteen-year-old Catherine de Medici married the future Henry II of France, her Italian entourage carried more than Renaissance fashion — they brought seeds. The broccoli Catherine\'s cooks served at court was initially called "Italian asparagus" by the French. Her influence on French cuisine was transformative, introducing artichokes, beans, and several green vegetables that had long been common in Tuscany but were unknown in Paris.',
+        link: 'https://en.wikipedia.org/wiki/Catherine_de%27_Medici',
+        linkLabel: "Catherine de' Medici on Wikipedia ↗"
+      },
+      darrigo: {
+        year: '1922',
+        title: "The D'Arrigo brothers commercialize broccoli in America",
+        body: 'Sicilian immigrants Stephano and Andrea D\'Arrigo began growing broccoli commercially in California\'s Salinas Valley in the early 1920s. Before them, broccoli was virtually unknown outside Italian-American communities. They pioneered refrigerated rail car shipping — making fresh broccoli available coast to coast. Their "Andy Boy" brand, named after Stephano\'s son, is still sold in American supermarkets today. The 1928 <em>New York Times</em> described broccoli as "a new and unusual vegetable."',
+        link: 'https://en.wikipedia.org/wiki/Broccoli#History',
+        linkLabel: 'History of broccoli on Wikipedia ↗'
+      },
+      bush: {
+        year: '1990',
+        title: "President Bush bans broccoli from Air Force One",
+        body: 'On March 22, 1990, President George H.W. Bush made an announcement that dominated the news cycle for days: "I do not like broccoli. And I haven\'t liked it since I was a little kid and my mother made me eat it. And I\'m President of the United States, and I\'m not going to eat any more broccoli." California and Florida growers responded by shipping approximately ten tons of broccoli to the White House. The Secret Service had to turn it away. The incident became one of the most memorable episodes in American food politics — and turned broccoli into a cultural symbol of defiance.',
+        link: 'https://en.wikipedia.org/wiki/George_H._W._Bush',
+        linkLabel: 'George H.W. Bush on Wikipedia ↗'
+      },
+      scalia: {
+        year: '2012',
+        title: "Justice Scalia's \"broccoli problem\"",
+        body: 'During oral arguments in <em>National Federation of Independent Business v. Sebelius</em> — the case that would determine the constitutionality of the Affordable Care Act — Justice Antonin Scalia posed what became known as the "broccoli problem": if Congress can mandate that Americans buy health insurance, what stops it from mandating they buy broccoli? The argument, meant to test the limits of the Commerce Clause, introduced a vegetable into one of the most consequential constitutional debates in decades. The ACA was ultimately upheld, but broccoli had found a new role as a legal metaphor.',
+        link: 'https://en.wikipedia.org/wiki/National_Federation_of_Independent_Business_v._Sebelius',
+        linkLabel: 'NFIB v. Sebelius on Wikipedia ↗'
+      },
+      tree: {
+        year: '2016',
+        title: 'The broccoli tree of Aberfeldy goes viral',
+        body: 'A lone tree on the banks of the River Tay near Aberfeldy, Scotland, captured the internet\'s imagination in 2016. Photographer Pawel Uchorczak\'s image — shot at dawn in autumn mist — showed a solitary oak whose silhouette was so perfectly shaped like a broccoli floret it looked almost artificial. The image was shared millions of times and turned the tree into a tourist destination. Tragically, vandals stripped the tree of its branches in November 2017, just one year after it had found global fame.',
+        link: 'https://en.wikipedia.org/wiki/Broccoli_tree',
+        linkLabel: 'The Broccoli Tree on Wikipedia ↗'
+      }
+    };
+
+    const overlay = document.getElementById('tl-modal-overlay');
+    const yearEl  = document.getElementById('tl-modal-year-el');
+    const titleEl = document.getElementById('tl-modal-title-el');
+    const bodyEl  = document.getElementById('tl-modal-body-el');
+    const linkEl  = document.getElementById('tl-modal-link-el');
+    const closeBtn = document.getElementById('tl-modal-close');
+
+    function openModal(key) {
+      const d = MODAL_DATA[key];
+      if (!d) return;
+      yearEl.textContent  = d.year;
+      titleEl.textContent = d.title;
+      bodyEl.innerHTML    = d.body;
+      linkEl.textContent  = d.linkLabel;
+      linkEl.href         = d.link;
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function closeModal() {
+      overlay.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.timeline-item[data-modal]').forEach(item => {
+      item.addEventListener('click', () => openModal(item.dataset.modal));
+      item.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(item.dataset.modal); }
+      });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   })();
   </script>
 </body>
